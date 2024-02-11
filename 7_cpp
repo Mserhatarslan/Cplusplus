@@ -26,9 +26,9 @@ int mx ; // private
 private: 
 int my; // private
 public 
-Int mz; // public
+int mz; // public
 protected:
-Int mt; // protected 
+int mt; // protected 
 public:
 	Int mp; //public
 }; 
