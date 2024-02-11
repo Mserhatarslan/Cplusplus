@@ -2,8 +2,10 @@
 Name lookup (derleyicinin ismin neyin ismi olduğunu anlama süreci)
 Contex control. (ismin dilin kurallarına uygun olarak kullanılmadığının kontrolü)
 Access control. (söz konusu kodun o ismi kullanma hakkının olup olmadığının kontrolü)
+```
 
 C programlama dilinde access control yok. Bir struct içerisindeki tüm memberlar dışarıdan erişilebilir. Default olarak public
+```
 
 public
 private
