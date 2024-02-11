@@ -19,7 +19,7 @@ Default , private  —-> class
 Default, public —-> struct
 
 Sınıfı tanımlarken struct anahtar sözcüğünü kullanırsam default erişim alanı public. 
-````
+```cpp
 class Data{
 
 int mx ; // private
@@ -32,7 +32,7 @@ int mt; // protected
 public:
 	Int mp; //public
 }; 
-````
+```
 Yapabilir miyim soruları legalite açısından cevaplanıyor. Mantıklı mı değil mi ileride görücez. Buna Layout denir, kodun kolay okunmasını sağlamak için. 
 
 Bazı programcılar private ögeleri en başta yazma eğilimindedir. Tercih meselesi. Yazım biçiminize bağlı. Erişim belirteçlerinin sadece data memberlerla ilgili olmadığını hatırlatmak istiyorum. Nested typler için de kullanılır. Member functionlar için de kullanılır. 
