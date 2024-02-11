@@ -20,18 +20,17 @@ Default, public —-> struct
 
 Sınıfı tanımlarken struct anahtar sözcüğünü kullanırsam default erişim alanı public. 
 ```cpp
-class Data{
-
-int mx ; // private
-private: 
+class Data {
+int mx; // private
+private:
 int my; // private
-public 
+public:
 int mz; // public
 protected:
-int mt; // protected 
+int mt; // protected
 public:
-	Int mp; //public
-}; 
+int mp; // public
+};
 ```
 Yapabilir miyim soruları legalite açısından cevaplanıyor. Mantıklı mı değil mi ileride görücez. Buna Layout denir, kodun kolay okunmasını sağlamak için. 
 
