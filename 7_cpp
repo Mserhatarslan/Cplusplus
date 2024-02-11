@@ -1,0 +1,343 @@
+3 ayrı kontrol var. 
+Name lookup (derleyicinin ismin neyin ismi olduğunu anlama süreci)
+Contex control. (ismin dilin kurallarına uygun olarak kullanılmadığının kontrolü)
+Access control. (söz konusu kodun o ismi kullanma hakkının olup olmadığının kontrolü)
+
+C programlama dilinde access control yok. Bir struct içerisindeki tüm memberlar dışarıdan erişilebilir. Default olarak public
+
+public
+private
+protected (Bunlar aynı zamanda anahtar sözcükler) 
+
+Protected dilin inheritance araç seti ile ilgili. (Kalıtım) 
+İnheritance ile bir sınıftan başka bir sınıfı elde edebiliyoruz. 
+
+Classlar birer scope içeriyor. Class scope. Eğer bir ismi bir sınıfın içinde bildirirseniz bu ismin aranıp derleyici tarafından bir yerde kullanılması durumunda namelookup’ın başarılı olabilmesi için özel kullanım gerekiyor. 
+qualified names deniyor. (nitelenmiş isim) 
+
+Default , private  —-> class
+Default, public —-> struct
+
+Sınıfı tanımlarken struct anahtar sözcüğünü kullanırsam default erişim alanı public. 
+````
+class Data{
+
+int mx ; // private
+private: 
+int my; // private
+public 
+Int mz; // public
+protected:
+Int mt; // protected 
+public:
+	Int mp; //public
+}; 
+````
+Yapabilir miyim soruları legalite açısından cevaplanıyor. Mantıklı mı değil mi ileride görücez. Buna Layout denir, kodun kolay okunmasını sağlamak için. 
+
+Bazı programcılar private ögeleri en başta yazma eğilimindedir. Tercih meselesi. Yazım biçiminize bağlı. Erişim belirteçlerinin sadece data memberlerla ilgili olmadığını hatırlatmak istiyorum. Nested typler için de kullanılır. Member functionlar için de kullanılır. 
+Neden bir access kontrolü var ? İleride konuşucaz. 
+
+Classlar birer scope içeriyor, buna class scope deniyor. 
+Eğer bir ismi bir sınıfın içinde bildirirseniz, bu ismin aranıp derleyici tarafından bu varlıkla ilişkilendirmesi için o ismin özel bir takım biçimlerde kullanılması gerekiyor. Qualified name deniyor. 
+
+Member selection dot operatorü
+x.y
+
+X nesnesinin ait olduğu sınıfın tanımında
+
+Member selection arrow operatoru 
+ptr->a
+
+Pointerın ait olduğu sınıf tanımında
+
+Scope resolution operatörü
+myClass::a
+
+
+Bir ismin class definition içinde aranması için ya nokta operatörünün ya ok operatörünün ya da çözünürlük operatörünün sağ operandı olarak kullanılması gerekiyor. 
+
+struct Data {
+Int x ;
+Public:
+Int y; }; 
+
+X ve y aynı scope’taki isimler mi ? KESİNLİKLE AYNI. Erişim ayrıcalıklı bölgeler scope değil. Karıştırma. 
+Aynı scope’ta bir ismi birden fazla varlığa verebilir miyiz ? 
+int a = 5; 
+int a = 3; 
+Sentaks hatası.
+
+Bu da sentaks hatası. Public private olması ile alakası yok.  
+Bir ismin class definition’da tanımlı bir isim olması için ismin nokta operatörünün ok operatörünün ve çözünürlük operatörünün sağ operandı olarak kullanılması lazım class scope dışında. 
+
+Namelookup, context control, access control. Bunları iyice öğren. 
+
+3 ayrı kontrol var. 
+Name lookup (derleyicinin ismin neyin ismi olduğunu anlama süreci)
+Contex control. (ismin dilin kurallarına uygun olarak kullanılmadığının kontrolü)
+Access control. (söz konusu kodun o ismi kullanma hakkının olup olmadığının kontrolü)
+
+Sınıf kapsamındaki bir ismi kullanabilmek için yukarıdaki şart var. (Ok operaötürü, nokta operatörü, çözünürlük operatörü) 
+
+Sınıfın veri elemanları doğrudan sınıf nesnesinin fiziksel olarak içinde yer alan memberler. TIpkı C’de yapıların elemanları gibi. 
+
+C’deki yapılar bütün öğeleri default olarak public. C’de erişim kontrolü yok. Default olarak public. Bunları derleyicin kontrolü ile erişilmez kılmak mümkün değil. 
+C’de üye fonksiyon diye bir fark yok, fonksiyon terimini ilave bir niteleyici ile kullanmak gerekmiyor. 
+
+C++’da bunları 2 farklı şekilde nitelendiriyoruz. ( 2 ayrı fonksiyon yapısı) 
+
+Birincisi C tipi fonksiyon.
+
+
+Biri C++’da fonksiyon dediğinde şöyle sormak çok normal. 
+Global function mu yoksa member function mu ? 
+Free function mu member function mu ? 
+Memberler’dan başlayalım. 
+
+Her data nesnesinin bir x’i y’si z’si var. 
+Yani siz bu sınıf türünden bir nesne tanımladığınızda bu nesnenin bir x, y,z elemanı var. 
+Storage’da bunlar tutuluyor. Class Data’nın sizeof değerinin storage değeri elemanlarının storage değerlerinin toplamı olduğunu düşünebilirsiniz eğer alignment yoksa. 
+
+Bir sınıftan bir nesne oluşturmak anlamında kullanılan kelime instantiate. O sınıf türünden bir nesne tanımlamayı kastediyor. 
+
+Bir sınıfı ınstantiate ediyorum diyorsa o sınıftan bir nesne tanımlamayı kastediyorum. 
+
+
+Class definition un kendisi bellekte yer ayrılması sonucu doğurmuyor. Derleyici bu tanımı gördüğünde bir yer ayırmıyor.  Bu sınıf türünden bir değişken tanımladığında yer ayrılıyor hafızadan. 
+
+
+12 bayt bastı. C’deki gibi. 
+
+Sınıf türünden nesneler const olabilir, static yerel değişken olabilir. 
+
+Data member doğrudan sınıf nesnesinin içinde fiilen o sınıf nesnesinin sahip olduğu değişkenler. Bunlara bazı dillerde instantiance variable de deniyor. Nesneye ilişkin değişkenler. 
+
+Gelelim üye fonksiyonlara, sınıfın üye fonksiyonları tamamen dil katmanında bir soyutlama. 
+Paradigmaya daha fazla uyum sağlaması için ve C++’ın diğer araçları ile de uyumlu olması için üye fonksiyon diye bir şey uydurmuşlar. Üye fonksiyon ile global fonksiyon assembly düzeyinde bir farklılık yaratmıyor. Fonksiyon fonksiyondur. 
+
+
+Üye fonksiyon sınıfın içinde bildirilen fonksiyonlar. Foo ve bar fonksiyonların sınıfın member fonksiyonları. Func ise free function. İşbirliği halinde her ikisi de kullanılıyorlar. C# gibi dillerde tüm fonksiyonlar member fonksiyon. 
+
+Sınıfın üye fonksiyonu ne demek ? 
+Assembly düzeyinde neden bahsettiğimizi anlamak için C’ye geri dönelim. 
+
+C’de tür eş ismi bildirimi yapmadıkça bu türün adı struct Nec. C++’da Nec bu türün ismi. Nec class tag yani. 
+
+Nec türünden bir değişkenim olsun. BU değişken çöp değerde değil set edilmiş olsun. 
+
+
+C programlama dilinde yapılar ile fonksiyonlar arasındaki ilişki bu şekilde. BU bazı dezavantajları içeriyor. Fonksiyona yapılan çağrı ifadelerinde adres operatörlerinin kullanılması ve fonksiyonun içinde de adresi alınan nesnenin elemanlarına erişmek için operatör kullanımı kodu verbose hale getiriyor. Fakat şöyle bir problem de var. 
+
+Koda bakarak hangi savaşçının hangi savaşçıya saldırdığı anlaşılabiliyor mu ? Hayır. ÜStelik burada aslında assembly düzeyinde olan adres kavramı kodun içinde de yer alıyor. Aynı assembly kodunu şu sentaksta da üretilir. 
+
+Tıpkı elemanlara erişir gibi fonksiyonun da nokta operatörünün sağ operandı yapılması, bir kere daha güzel bir algı yaratıyor. Eylemi yürütenin noktanın solundaki nesne olduğunu anlıyorsunuz. Ortada adres operatörü de yok referans semantiği devreye giriyor. Yükseltilmiş bir sentaks ve assembly tarafında da bir farklılık oluşturmuyor. Dil katmanındaki bir gizleme. 
+
+
+
+
+Bildirime bakarak bu fonksiyonun kaç tane parametre değişkeni olduğunu söyleyebilir misiniz ? 
+Sınıfın non static üye fonksiyonlarının hepsinin fazladan 1 parametre değişkeni var ama sentkas olarak gösterilmiyor. Bu parametre değişkeni sınıf türünden bir pointer. Hidden parametre. 
+
+void func(Nec *p) ; 
+
+
+Böyle biir kod yazıldığında derleyici aslında nasıl bir kod üretiyor ? mynec’in adresini bu fonksiyonların parametre değişekni olan pointera argüman olarak geçiiyor. Nesnelerin adresleri ile çağrılam fonksiyonlar. Eğer nesnenin adresini kullanıyorsak bu sefer de nesne adresini ok operatörünün operandı yaptığınızda fonksiyonun ismini sağ operand yaptığınızda derleyici derleyici ok operaötürünn sol operandı olan adresi bu fonskiyonun gizli parametre değişkenine argüman olarak gönderiyor. 
+
+Global fonksiyonların ilave bir parametre değişkeni yok. 
+
+ Nec türünden bir değişken tanımladığınız zaman, bu değişkeni nokta operaötünün operandı yaptığnızda bu nesnenin adresini o parametreye argüman olarak göndermiş oluyoruz. 
+
+
+
+
+2 şekilde de olur. Assembly açısından bir fark yok. 
+Üye fonksiyonlar söz konusu olduğunda konu ile yeni tanışan kişilerin sordukları sorular var. 
+
+
+
+Sınıfın üye fonksiyonları sınıfın storage ihtiyacını değiştiriyor mu ? Hayır. Sınıf nesnesinin bellek ihtiyacını etkilemezler. 
+
+
+Global fonksiyonlar erişim kontrolüne tabii. Yani siz global biir fonksiyon içinde bir sınıfın  private veri elamanına ya da protected veri elemanına erişen bir kod yazdığınızda o access kontrolüne takılacak. Şİmdi ise foo fonksiyonuna bakalım. 
+
+Sentaks hatsı yok. Sınıfın üye fonksiyonu olmasının global fonskiyon olmasına göre sentaks açısından farklılığı artık bunlar sınıfın private öğelerine serbestçe erişebiliyorlar. Bunlar üzerinde erişim kontrolü yok. Sınıfın üye fonksiyonları sınıfın private elemanlarına erişme hakkına sahip. 
+
+2. Önemli farklılık scope. 
+
+Üye fonksiyon kavramını içselleştirelim. 
+
+// n.foo()
+Noktanın sol operandındaki nesnenin adresini fonksiyona göndermiş oluyoruz. 
+
+//p->foo() 
+Ok operatörünün solundaki pointerı, adresi, fonksiyonun gizli parametre değişkenine argüman olarak göndermiş oluyoruz. 
+
+Sınıfın veri elemanları erişim kontrolüne tabii. 
+
+Clientlar foo ve bar fonksiyonuna erişebilir fakat baz fonksiyonuna erişemez. (access kontrolden faydalandık). Sınıfın veri elemanları gibi üye fonksiyonları da erişim kontrolüne tabii. 
+
+
+Function overloading yok çünkü scope’lar farklı. Fo olması için scopeların aynı olması lazım. 
+
+Function overloading var. 
+
+
+
+
+Function overloading yine var. Public private scope değil….
+
+
+Overloading yok redecleration. 
+
+
+Bu direkt sentaks hatası. Sınıfın üye fonksiyonları için redeclaration yok. 
+
+Legal değil. Constluk bir fark yaratmıyor. 
+
+Üye fonksiyonlar overload edilebilir. 
+
+Exact match yapılır. 
+
+
+
+Static ve non static member fonksiyonları görmedik. 
+Çok basit ama fonksiyon bildiriminde static anahtar sözcüğü kullanılıyor. 
+
+Foo’nun gizli bir parametre değişkeni var mı ? evet
+Bar’ın gizli bir parametre değişkeni var mı ? hayır
+
+Foo türü fonksiyonlar nesne ile ilgili fonksiyonlar
+Non static üye fonksiyonlar instance ile ilgili. 
+Static member fonksiyonlar sınıf ile ilgili. Class scope’dalar. 
+
+class Myclass{
+public:
+	void func();
+private:
+
+};
+
+
+Sınıfın üye fonksiyonlarının bildirimi başlık dosyasında bulunur. 
+Ister global fonksiyon olsun ister member function olsun, bildirimini başlık dosyasında yapıp, tanımını kod dosyasında yapıyoruz. En sık kullanılan konvensiyon böyle. 
+
+Üye fonksiyonlar böyle tanımlanmıyor. 
+
+int Myclass::func()
+{
+
+}
+Bu şekilde tanımlanır. 
+
+
+
+
+
+Üye fonksiyonlar için isim arama kuralları farklı. 
+
+Normalde global fonksiyon olsaydı bu isim nasıl arancaktı ? 
+Önce blokta, bulunamazsa kapsayan blokta, bulunamazsa onu kapsayan blokta, bulunamazsa namescpade, bulunamazsa error. 
+
+Üye fonksiyonlarda blokta bulunamazsa, kapsayan blokta, burada da bulunamzasa class scope’ta aranır. 
+
+mx ismi blokta arandı bulunamadı, class scopeta arandı ve bulundu. Data member. 
+
+
+Sınıfın veri elemanlarını üye fonksiyon içinde kullandığınız zaman isim bulunamazsa class scopeta aranacak. 
+
+
+
+Class scopetaki mx değil. Maskeledi, çünkü isim arama aynı scopeta başarı ile sonuçlandı. 
+
+Sınıf ismi ile niteleyerek kullandık, mx ismi doğrudan myclass scope’unda aransın demek. 
+Class scope’ta aranacak. 
+
+Anlamsal açıdan hiçbir fark yok. 
+
+
+Bu kod legal. Private kontrolü yok. 
+
+Name hiding’den bahsetti hoca. a scopetaki a. Int a satırı yorums atırı yapılırsa class scopetaki a. Class scopetaki a yorum satırım yapılırsa global isim olarak tanımlanmış a. 
+
+::a —-> global düzeydeki a
+Nec::a —-> class scope’taki a
+
+
+Derleyici foo ismini global namespace de arar. 
+
+
+
+
+
+foo fonksiyonu da bar fonksiyonu da mydata üzerinde işlem yaparlar. C fonksiyonu. 
+
+
+Üye fonksiyonlar normal fonksiyonlar sadece gizli bir parametre değişkenleri var. 
+
+
+
+
+C de böyle bir yapı bildirimi legal değil çünkü elemanı yok. C++’da legal. Empty class.
+
+
+
+
+
+
+Sentaks hatası. 
+Namelookup yapıldı isim bulundu class scope’da
+Context control de function overload resolution devreye girdi ve double parametreli fonksiyon seçildi. Exact match
+Şimdi access control devreye girdi,sentaks hatası çünkü private. 
+Erişim kontrolüne takıldı. 
+
+
+Sentaks hatası yok. Çünkü sınıfın üye fonksiyonu. Private bölümüne erişebilir. 
+
+
+Bu kodun legal olması başka anlamlı olması başka. 
+
+
+inline expansion (optimization)
+inline function
+ODR 
+
+
+foo , setter mutator
+bar , accessor (adresini aldığı Nec nesnesine salt okuma amaçlı erişeceğini belirtir)
+
+
+
+Buraya gönderdiğiniz nesnenin değeri değişmeyecek, buna güvenerek kod yazabilirsin diyor. 
+
+Yani accessor bir fonksiyon içerisinde yanlışlıkla yapılan mutator işlemleri compile time’daki kontrole takılacak. 
+Sınıfların üye fonksiyonları söz konusunda bir fonksiyonu accessor mu mutator mu olduğunu nasıl anlicaz ? 
+Ilk parametre gizli. 
+
+
+
+
+Funct mutator, non cost member function
+Foo accessor, const member function
+
+Sınıfların non static üye fonksiyonları 
+Cost üye fonksiyon olabilir
+Non cost üye fonksiyon olabilir. 
+
+
+LEGAL
+
+SENTAKS HATASI 
+
+non static üye fonksiyonları ikiye ayrılır. 
+non cost   (Myclass*)
+cost (const Myclass*)
+
+
+Const T* ‘den T *’a örtülü dönüşüm yok. 
+T *’dan T const *’a dönüşüm var. 
+Tüm kontroller buan göre yapılacak. 
+
+T *’dan T const *’a dönüşüm var.  Yani sentaks hatası yok. 
+
+Const T* ‘den T *’a örtülü dönüşüm yok.  Yani sentaks hatası. 
