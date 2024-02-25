@@ -418,10 +418,11 @@ Aşağıdaki görselde bir sınıfın hangi durumlarda tanımlanırsa derleyici 
 ![image](https://github.com/Mserhatarslan/Cplusplus/assets/63358327/d286f5f8-3e9e-41e0-9959-4fab07137473)
 
 Karşımıza çıkacak olan sınıfların tipik olarak yapısı şöyle; 
-Sınıfın bütün special member functionları var. 
+
+1) Sınıfın bütün special member functionları var. 
 
 
-2. Grup sınıf biçimi de var. Bu sınıflara move only type deniyor. Bunlar taşımaya açık ama kopyalamaya kapalı sınıflar. Yani bunların kopyalanması istenmiyor. Ya kopyalanması semantik açıdan doğru değil ya da kopyalanmasının bazı sakıncaları var.
+2)  Grup sınıf biçimi de var. Bu sınıflara move only type deniyor. Bunlar taşımaya açık ama kopyalamaya kapalı sınıflar. Yani bunların kopyalanması istenmiyor. Ya kopyalanması semantik açıdan doğru değil ya da kopyalanmasının bazı sakıncaları var.
    
 Mesela unique_ptr sınıfı 
 
@@ -674,7 +675,10 @@ int main()
 
 ```
 
-Sentaks hatası. Çünkü atama operatörünün sağ operandı int türden ama atama operatörünün sol operandı Myclass türünden. Int türden Myclass türüne örtülü dönüşüm yok. 
+Sentaks hatası. Çünkü atama operatörünün sağ operandı int türden ama atama operatörünün sol operandı Myclass türünden. Int türden Myclass türüne örtülü dönüşüm yok. Tür uyuşmazlığı var. Derleyicin verdiği sentaks hatasına bakalım; 
+```
+There is no acceptable conversion
+```
 
 ```
 class Myclass{
@@ -692,7 +696,25 @@ int main()
 ```
 Legal. 
 
-Derleyici atama operatörünün sağ operandının int türden olduğunu görünce bu atamanın yapılabilmesi için int’i örtülü olarak Myclass sınıfı türünden bir nesneye dönüştürdü. 
+Derleyici atama operatörünün sağ operandının int türden olduğunu görünce bu atamanın yapılabilmesi için int’i örtülü olarak Myclass sınıfı türünden bir nesneye dönüştürdü. Yani aslında derleyicin yaptığı dönüşüm şöyle bir koda karşılık geliyor ; (Sembolik olarak) 
+
+```
+class Myclass{
+public: 
+    Myclass() { };
+    Myclass(int x)
+};
+
+int main()
+{
+
+  int ival = 10; 
+  Myclass m;
+  m = ival; 
+
+}
+```
+Böyle olduğunu kanıtlayalım. int parametreli constructor'da bu fonksiyonun çağrıldığını gösteren bir yazı yazdırsam basit bir şekilde kanıtlyabiliriz. 
 
 ```
 class Myclass{
@@ -713,6 +735,187 @@ int main()
 
 }
 ```
-User defined conversion deniyor.
 
-explicit constructor
+Standart outputa x ve onun değeri olan 10 değerini basar. 
+Buradaki constructor kendi görevinin yanı sıra int türden bir ifadeyi Myclass  sınıfı türüne denüştürdü. Bu tür dönüşümlere User defined conversion deniyor.(UDC) 
+
+
+Aşağıdaki kodda getchar çağrısından önce destructor çağrılacak mı ? 
+
+```
+class Myclass{
+public: 
+    Myclass() { };
+    ~Myclass()
+    {
+      std:cout << "Myclass destructor this  = " << this << "\n";
+    }
+
+    Myclass(int x)
+    {
+      std:cout << "Myclass(int x) x = " << x << "\n";
+    }
+};
+
+int main()
+{
+
+  int ival = 10; 
+  Myclass m;
+  m = ival;
+  (void)getchar();
+
+}
+```
+Kesinlikle çağrılacak. 
+
+
+```
+class Myclass{
+public: 
+    Myclass()
+    {
+    std:cout << "default  constructor    = "  << "\n";
+
+    };
+    ~Myclass()
+    {
+      std:cout << "Myclass destructor this  = " ;
+    }
+
+    Myclass(int x)
+    {
+      std:cout << "Myclass(int x) x = " << x << "\n";
+    }
+
+    Myclass& operator = (const Myclass&)
+    {
+    	  std:cout << "copy assignment   = "  << "\n";
+           return *this; 
+
+     }
+
+    Myclass& operator = (Myclass&&)
+    {
+    	  std:cout << "move assignment   = "  << "\n";
+           return *this; 
+
+     }	
+
+};
+
+int main()
+{
+
+  int ival = 10; 
+  Myclass m;
+  m = ival;
+
+}
+```
+
+Kodun çıktısı 
+
+```
+default  constructor
+Myclass(int x) x = 10
+move assignment
+Myclass destructor
+Myclass destructor
+```
+
+Myclass m değişkeni için default constructor çağrıldı. 
+m= ival satırındaki atamada derleyici int türden Myclass sınıfı türüne dönüşüm yapabilmek için sınıfın int parametreli constructoruna çağrı yaptı. Fakat bu atamada artık derleyicinin oluşturduğu nesne bir PR value expression geçici nesne olduğu için atamayı da sınıfın move assignment fonksiyonu yaptı. 
+
+İşte böyle constructorlara dönüşüm sağladığı için explicit constructor deniyor. Buraya dikkat !!! Dert açabilir. 
+
+Eğer sınıfın böyle bir constructoru varsa artık int türden Myclass sınıfı türüne dönüşüm bekleyen her yerde derleyici durumdan vazife çıkararak bu constructorı çağırarak dönüşümü gerçekleştirecek. 
+
+```
+class Myclass {
+
+public:
+	Myclass();
+	Myclass(int);
+};
+
+void foo(Myclass);
+
+int main()
+{
+	Myclass m;
+	m = 5;
+	int mi = 17;
+	foo(mi);
+}
+
+```
+Yanlışlıkla, bilerke isteyerek değil m değişkenini argüman olarak göndermek yerine mi değişkenini argüman olarak gönderdiğinizde sentaks hatası olmasını beklerken bu sentaks hatası olmayacak. 
+Çünkü dilin kuralları gereği int parametreli constructora çağrı yaparak bir geçici nesne oluşturacak. 
+
+```
+class Myclass {
+
+public:
+	Myclass();
+	Myclass(int);
+};
+
+void foo(Myclass);
+
+Myclass bar()
+{
+	int i = 5;
+	return i;
+}
+
+int main()
+{
+	Myclass m;
+	m = 5;
+	int mi = 17;
+	foo(mi);
+}
+
+```
+
+bilerek ya da bilmeyerek yanlışlıkla i değişkenini return ifadesi yapsam sentaks hatası olacak mı ? Hayır. Derleyici yine int parametreli constructora güvenerek örtülü dönüşüm yapacak. Çok tehlikeli. 
+
+Conversion constructor dikkatli kullanılmalıdır. 
+
+```
+class Myclass {
+
+public:
+	Myclass();
+	Myclass(int);
+};
+
+int main()
+{
+	Myclass m;
+	m = true; 
+	m = 3.4;
+	m = 'A';
+}
+
+```
+
+m = true, m = 3.4; m = 'A'; ifadeleri malesef legal. Dİlin çok önemli bir kuralı devreye giriyor. 
+
+user defined conversion olmayan dilin kurallarına geçerli olan dönüşümlere standard conversion denir. 
+
+user defined conversion
+standard conversion
+
+Eğer bir dönüşüm örtülü olarak önce standard conversion ondan sonra user defined conversion şeklinde yapılıyorsa derleyici bu dönüşümü yapmak zorunda. 
+
+
+Eğer bir dönüşüm örtülü olarak önce user defined conversion ondan sonra standard conversion şeklinde yapılıyorsa derleyici bu dönüşümü yapmak zorunda. 
+
+bool'tan int'e dönüşüm var => standard conversion 
+int => Myclass  => user defined conversion
+
+
+udc + udc = derleyici bu dönüşümü yapmaz. 
+
