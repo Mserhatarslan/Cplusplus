@@ -691,7 +691,8 @@ int main()
 }
 ```
 Legal. 
-derleyici atama operatörünün sağ operandının int türden olduğunu görünce bu atamanın yapılabilmesi için int’i örtülü olarak Myclass sınıfı türünden bir nesneye dönüştürdü. 
+
+Derleyici atama operatörünün sağ operandının int türden olduğunu görünce bu atamanın yapılabilmesi için int’i örtülü olarak Myclass sınıfı türünden bir nesneye dönüştürdü. 
 
 ```
 class Myclass{
