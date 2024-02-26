@@ -1,6 +1,640 @@
 # C++-Kursu-Notları-
 
-17 Şubat 2024 11. C++ Dersinden Notlar;
+11 Şubat 10. C++ Dersinden Notlar; 
+
+constructor initializer list CIL
+Member initializer list MIL
+constructor sınıfın non static veri elemanlarını initialize ediyordu.
+Constructorın içinde ana bloğunun içinde veri elemanları kullandığıız zaman onlar hayata gelmiş durumda. 
+
+Mümkün olduğunca elemanları initialize etme görevini üstlenmesi gerektiğini söyledik. 
+constructor sınıfın non static veri elemanlarını initialize eder. 
+Constructorın ana bloğunun için veri elemanları kullandığınız zaman onlar hayata gelmiş durumda. Myclass sınıfın constructorlarından biri, program akışı buraya geldiğinde tüm veri elemanları hayata gelmiş demektir. Ilk değer vermiyorsunuz atama yapıyorsunuz.
+
+```
+class Myclass{
+
+public:
+	Myclass()
+	{
+		mx =
+	}
+};
+
+```
+Elemanları initialize etme görevinin constructora verilmesi iyi bir fikirdir. 
+
+Elemanların ilk değer alma sırasını belirleyen kriter, sınıf içindeki bildirim sırasıdır. Bildirim sırasını korumakta fayda var. Özellikle elemanlar birbirini initialize etmede kullanılıyorsa yanlış bir sıralama bazı veri elemanlarının çöp değerle kullanılması sonucunu doğurabilir. 
+
+Önemli sentaks öğelerinden biri daha default member initializer, eğer veri elemanları derleme zamanında hangi değerle hayata gelecekleri belliyse in class initializer sentaksını kullanıyoruz. Bu ilk değer verme değil, eğer derleyicinin yazdığı default constructor ya da bizim yazdığımmız constructucor herhangi bir şekilde bu veri elemanını initialize etmezse default olarak bu değerle initialization kodunun eklenmesini istiyoruz. 
+
+```
+class Myclass{
+
+public:
+private: 
+	int mx{10};
+};
+
+```
+
+```
+class Myclass{
+
+public:
+private: 
+	int mx = 10; 
+};
+
+```
+
+Parantez tokeni burada kullanılamıyor. 
+Default member initializer modern c++ ile dile eklenen araçlardan biri. 
+Ilk defa special member functions terimini kullandık. 
+
+Special member functions, sınıfların özel üye fonksiyonları. 
+Bu kategorideki fonksiyonların kodları belirli şartlar sağlandığında derleyici tarafından yazılabiliyor. Derleyicinin özel üye fonksiyonunun kodunu yazmasına o fonksiyonu default etmesi denir. 
+Special member functions, öyle fonksiyonlar ki defaulted by the compiler. Kodları derleyici tarafından yazılır. 
+
+6 tane özel üye fonksiyon var. 4’ü eskiden de vardı ama 2 tanesi modern C++ ile dile eklendi. 
+İsminde move geçenler C++ 11 ile dile eklendi.
+
+Sınıfların özel üye fonksiyonları : 
+- Default ctor
+- Destructor
+- Copy ctor
+- Move ctor ( Modern cplusplus ile eklendi) (C+11 standardı ile dile eklendi)
+- Copy assignment
+- Move assignment ( Modern cplusplus ile eklendi)(C+11 standardı ile dile eklendi)
+
+
+Durumları (Stateleri) ne olabilir ? 
+User declared -> fonksiyonun programcı tarafından bildirilmesi 
+İmplicitly declared -> programcı tarafından yapılan bir bildirim olmamasına rağmen derleyicinin dilin kurallarına dayanarak fonksiyonun bildirimini yapması
+Not declared -> fonksiyonun olmaması
+
+User declared olması durumunda programcı tanımlamak üzere bildirimini yapmış olabilir, bildirimini derleyici yapsın diye yapmış olabilir, bildirimini bunu çağırmak sentaks hatası olsun diye yapmış olabilir
+İmplicitly declared olması durumunda derleyici örtülü olarak fonksiyonu bildirmiş olabilir. 
+
+Bu fonksiyonlara ilişkin aldığınız hata mesajlarına dikkat etmeniz gerekiyor. 
+
+Taşıma semantiği ile de ilk defa karşılaşıcaz. R value referansın varlığı büyük ölçüde taşıma semantiği ile ilgili. 
+En çok yanlış anlaşılan konulardan biri taşıma semantiği. Mülakatlarda da çıkar. 
+
+Copy Constructor:  (kopyalayan kurucu işlev) 
+SInıfın bir üye fonksiyonu ama özel bir üye fonksiyonu. Belirli şartlar sağlandığında derleyici bizim yerimize copy constructor kodunu yazacak. Copy constructor default edilebilen bir özel üye fonksiyonu çünkü special member function. 
+- Derleyici örtülü olarak bildirip kendisi default edebilir 
+- User declared olur ama ben derleyicinin kendisi yazmasını isteyebilirim
+
+Neden buna copy constructor deniyor ? cpp de öyle yerler var ki bir sınıf nesnesi hayata değerini aynı türden bir başka sınıf nesnesinden alarak hayata geliyor.  
+
+Elinizde bir sınıf nesnesi var fakat siz yeni bir sınıf nesnesi hayata getirmek istiyorsunuz, aynı state de aynı değere sahip bir nesne olsun. Mustafa değerini necatiden alarak hayata gelsin. Bu en sık kullanılan nesne oluşturma biçimlerinden biri. Hayata getirilecek nesnenin değerini başka bir sınıftaki nesneden alıyor. 
+
+Biri açık initialization sentaksı. 
+
+Nec y;
+
+Nec x = y; 
+x için çağrılacak fonksiyon copy constructor’dur. 
+Her nesne hayata geldiğinde constructor ile hayata getiriliyor. Ama değerini aynı türden başka bir nesneden alarak hayata geliyorsa onun için çağrılacak fonksiyon copy constructor. 
+
+Boolean sorular; 
+
+Burada hayata gelen nesne hangisi ? x
+Copy constructor hangisi için çağrılacak ? x
+
+
+Copy constructor’un x’i hayata getirirken onu y’nin değeriyle hayata getirmesi için y’ye de erişmesi lazım değil. İşte bu yüzden copy constructor’un bir parametresi olması gerekiyor. Y’yi alabilecek bir parametresi olması gerekiyor. 
+Burada y değişecek mi ? y’yi değiştirmeye yönelik bir işlem yok. Y’yi salt okuma amaçlı erişicem. Yani const L value reference parametre idealdir yani. 
+
+```
+class Nec {
+public:
+	Nec(const Nec& other)
+	{
+	mx // x’in mx’i;
+	}
+}
+
+```
+
+Bu şekilde bildirilen bir fonksiyon sınıfın copy constructor’ı
+Bu fonksiyonun içinde this kimin adresi olacak ? x’in 
+
+copy constructorun çağrılacağı diğer senaryolar, copy initialization yapabildiğimiz gibi direkt initialization sentkasını da kullanabiliriz 
+
+```
+class Nec {
+public:
+	Nec(const Nec& other);
+	
+}
+
+Nec x1 = y;
+Nec x2(y);
+Nec x3{y};
+
+```
+x1 , x2,x3 copy constructor ile hayata gelecek. 
+
+auto x1 = y;
+auto x2 (y);
+auto x3{y};
+Bu şekilde de yazılabilir. 
+
+cc —:> copy constructor 
+cctor —> copy constructor
+cc sadece bu senaryoda mı çağrılıyor ? bir nesnenin değerini bir başka nesneden alarak hayata geldiği senaryolardan biri de fonksiyon çağrıları. 
+
+```
+class Nec {
+ //..
+}
+
+void foo(Nec x)
+{
+}
+
+int main()
+{
+Nec nec;
+foo(nec);
+}
+```
+
+Bu fonksiyonun çağrılması durumunda -başka bir özel durum yoksa, ileride ele alacağımız-  fonksiyonun parametre değişkeni hayata değerini aynı sınıf türünden bir nesneden alarak gelmeyecek mi ? cc çağrılacak. İşte cc’nun çağrılacağı en tipik senaryolardan biri 
+Bir fonksiyonun parametresinin sınıf türünden olması ve o fonksiyonun bir sınıf türünden bir L value expression ile çağrılması argüman olarak. 
+
+Bir klasik durum daha var. 
+Diyelim ki bu seferde tam tersi fonksiyonun geri dönüş değeri bir sınıf türünden. Siz bu fonksiyonun return statement’inde return ifadesi olarak bir sınıf nesnesi kullanıyorsunuz. Eğer bu durumda derleyici ileride göreceğimiz önemli bir optimizasyonu yapacak durumda değilse bu fonksiyonun geri dönüş değerininin çağrılan koda aktarılması için cc çağrılacak. 
+
+```
+class Nec {
+ //..
+}
+
+Nec bar()
+{
+	return nec; 
+}
+
+int main()
+{
+Nec mynec = bar();
+}
+```
+cc special member function olduğu için kodu derleyici tarafından yazılabilir. 
+
+Bir sınıfın kodunu yazalım. 
+
+```
+
+class Nec {
+public: 
+	Nec()
+	{
+	std::cout << “Nec default ctor this : << this <<’\n’;
+	}
+	
+	~Nec()
+	{
+	std::cout << “Nec destructor this : << this <<’\n’;
+	}
+};
+
+int main()
+{
+	Nec x;
+}
+
+```
+
+Aynı adres. 
+
+Ama şimdi bakın. 
+
+```
+class Nec {
+public: 
+	Nec()
+	{
+	std::cout << “Nec default ctor this : << this <<’\n’;
+	}
+	
+	~Nec()
+	{
+std::cout << “Nec destructor this : << this <<’\n’;
+	}
+};
+
+int main()
+{
+	Nec x;
+	{
+	Nec y = x; 
+	}
+std::cout << “main devam editor\n”;
+(void)getchar();
+}
+```
+
+Default cc x için çağrıldı. 
+This pointerları aynı değil. Y nesnesi için destructor çağrıldı. 
+Main bloğunun sonunda x’in destructoru çağrılacak. 
+
+Peki y nasıl hayata geldi ? cc ile. Ee peki ben cc ben yazmadım. Derleyici yazdı. Derleyici default etti. 
+Sınıfın special member functionları bazı şartlar sağlandığında derleyici tarafından örtülü olarak bildirilip tanımlanabiliyor. 
+
+cc’u kendim tanımlasaydım bizim tanımladığımız çağrılacaktı. 
+
+```
+#include <iostream>
+
+
+class Nec {
+public:
+   Nec()
+   {
+   std::cout << "Nec default ctor this :" << this <<'\n';
+   }
+
+
+   Nec(const Nec& other)
+   {
+   std::cout << "Nec copy ctor this :" << this <<'\n';
+
+
+   }
+  
+   ~Nec()
+   {
+   std::cout << "Nec destructor this :"  << this <<'\n';
+   }
+};
+
+
+int main()
+{
+   Nec x;
+   {
+   Nec y = x;
+   }
+std::cout << "main devam editor\n";
+(void)getchar();
+}
+
+```
+Derleyici belirli koşullar sağlandığında sınıfın özel üye fonksiyonlarının kodunu yazıyor. 
+Eğer bir fonksiyonun kodunu derleyici default ederse derleyici nasıl bir kod yazıyor ? 
+
+Bu soruyu her bir özel üye fonksiyonu için sorduğumda ve cevapladığımda şu yapıyı kullanıcaz. 
+```
+class Myclass {
+public:
+	Myclass()
+	{
+//derleyici kodu buraya yazıyor.
+	}
+private:
+	T tx;
+	U ux;
+	W wx;
+};
+```
+Derleyici sınıfa default cc’yı kendisi yazarsa derleyicinin kendisi yazdığı special member function olan default copy constructor sınıfın public, non static, inline üye fonksiyonu. 
+
+dc sınıfın her zaman public, non static, inline üye fonksiyonu. (default constructor)
+Derleyicinin yazdığı dc, sınıfın veri elemanlarını default initializer ediyor. 
+
+Eğer derleyici bir sınıfın bir özel üye fonksiyonunu örtülü olarak bildirip tanımlama girişiminde bulunduğunda eğer dilin kurallarını çiğneyen bir durum oluşursa derleyici default edeceği özel üye fonksiyonu delete edilmiş olarak bildirir.
+
+```
+Myclass = delete();
+```
+Ya elemanlar default initialize edilemiyorsa ? elemanlardan biri const ise ? sentaks hatası oluşacak. Derleyici delete edilmiş olarak bildirilecek. 
+
+```
+class Myclass {
+	const int x ;
+};
+```
+Bu kodda bir sentaks hatası var mı ? Hayır
+
+Bu sınıfın default constructorı deleted edilmiş durumda. Derleyici implicit declared durumda, x’i default initialize ediyor ama const nesneler default initialize edilemediği için sentaks hatası oluşacak. 
+
+Ne zaman sentaks hatası alırım ? delete edilmiş fonksiyon çağrıldığında. 
+```
+class Myclass {
+	const int x ;
+};
+
+int main()
+{
+Myclass m;
+}
+```
+Attempting to reference a deleted function
+
+class Myclass {
+	int &r;
+};
+```
+int main()
+{
+Myclass m;
+}
+```
+Burada da aynı durum geçerli. 
+
+
+Sentaks hatası olmasının sebebi Caner’in default constructorunun private olması. 
+
+Eğer siz sınıfa herhangi bir constructor bildirirseniz derleyici default constructorı bildirmez. Bu bir kural. Tasarımsal bir kural. 
+
+```
+class A{
+public:
+	A(int);
+}
+
+```
+A sınıfın default constructoru hakkında ne söylersiniz ?
+Cevap yok . neden çünkü ben bir copy constructor yazdım. 
+
+```
+class A{
+public:
+	A(const A&);
+}
+
+```
+
+Bu constructora ne deniyor ? 
+Copy constructor. bu sınıfın default constructoru var mı ? hayır yok. 
+Ben bir constructor bildirirsem derleyici default constructor implicitly declared yapmıyor. 
+
+Destructorun not declared olma ihtimali yok. 
+
+Bir fonksiyonun delete edilmesi onun olmadığı anlamına gelmiyor, var olduğu anlamına geliyor ama onun çağrılması sentaks hatası. 
+
+Copy constructor’a geri dönelim. 
+
+Sınıfın özel üye fonksiyonunu derleyici yazarsa, derleyicinin yazdığı özel üye fonksiyon derleyici tarafından keyfi bir şekilde yazılamıyor. 
+Derleyici dilin kurallarına uygun olarak yazmak zorunda. 
+
+Eğer bir derleyici bir sınıfın bir özel üye fonksiyonunu örtülü olarak bildirip tanımlama girişiminde bulunduğunda dilin kurallarını
+çiğneyen bir durum oluşursa derleyici default edeceği özel üye fonksiyonunu delete edilmiş olarak bildirir. 
+Acaba derleyici sınıf için nasıl bir copy constructor yazıyor ? derleyicinin yazdığı copy constructor sınıfın non static, public, inline fonksiyonu. 
+
+
+```
+class Myclass {
+public:
+	Myclass(){}
+	Myclass(const Myclass& other) : tx(other.tx), ux(other.tx), wx(other.wx){}
+private:
+	T tx;
+	U ux;
+	W wx;
+};
+```
+Derleyicinin yazdığı copy constructor sınıfın veri elemanlarını copy constructor ediyor. Sınıfın veri elemanlarının copy constructor edilmesi demek eğer bunlar sınıf türünden değilse diğer nesnenin değerini alıyor. 
+
+Rule of zero —--> sıfır kuralı : 
+Sınıfın özel üye fonksiyonları var. Bu fonksiyonların kodunu derleyici bizim için yazabiliyor. Bizim için yazmasına default etmesi deniyor. Derleyicinin bu fonksiyonları nasıl yazacağının kuralı belli mi ? evet, belli. Eğer derleyicinin yazdığı kod, işimize geliyorsa bunların hiçbirini bildirmiyorsunuz, hepsini derleyiciye bırakıyoruz. Bırakın derleyici default etsin demek. Derleyicinin yazmasını tercih ediyorum. Derleyicinin yazdığı kod her zaman daha iyi. Buna rule of zero deniyor. 
+
+
+Kopyalama semantiği ; 
+Value type şu anlamda kullanılıyor. 
+
+Eğer bir nesne bir value type türündense o zaman o nesneye başka bir nesnenin değerini atadığımızda bunlar arasında bir bağlantı olmaz. Her nesnenin değeri kendine. 
+
+x = y; 
+
+X ile y arasında bir bağlantı yok. 
+x’i değiştirirsek y değişmez. 
+y’yi değiştirirsek x değişmez. 
+
+std::string bir value type mi ? evet
+
+```
+std::string s1{"guven unel"};
+std::string s2 = s1;
+s1 = "remzi kaya";
+```
+
+S2’nin değeri değişmiyor. 
+
+Konudan bağımsız not; 
+```
+Bir sınıfın elemanı kedi türünden olamaz. Kendi türünden pointer ve referans olabilir. 
+```
+
+```
+class Date{
+
+public:
+	Date(int day, int mon, int year) : day_(day), mon_(mon), year_(year) { }
+	//
+private:
+	int day_;
+	int mon_,
+	int year_;
+};
+
+int main()
+{
+	Date dx{11,2,2024};
+	Date dy = dx; 
+}
+```
+dy için sınıfın hangi fonksiyonu çağrılacak ? copy constructor. 
+Sınıfın copy constructrunu derleyici yazıyor. Bana bir zararı var mı ? hayır. 
+dy nesnesi dx nesnesi ile aynı değeri sahip. 
+
+```
+class Date{
+
+public:
+	Date(int day, int mon, int year) : day_(day), mon_(mon), year_(year) { }
+	//
+private:
+	int day_;
+	int mon_,
+	int year_;
+};
+
+int main()
+{
+	Date dx{11,2,2024};
+	Date dy = dx;
+	dx.print();
+	dy.print(); 
+}
+```
+Aynı değerleri yazdıracak. 
+Kendimiz copy  constructoru yazsaydık şöyle yazardık. Run time da trace edebilmek için yazarız. 
+
+```
+class Date{
+
+public:
+	Date(int day, int mon, int year) : day_(day), mon_(mon), year_(year) { }
+	Date(const Date% other) : day_(other.day_), mon_(other.mon_), year_(other.year_) { };
+	void print()const
+ 	{
+		std::cout << day_ << mon_ << year__ <<'\n';
+	}
+
+};
+```
+Yazmama gerek yok. 
+Sınıfların çok büyük çoğunluğu Date gibi sınıfları. Copy constructor yazmana gerek yok. Sınıfların çok büyük çoğunluğu için rule of zero’ya bağlı kalacağız. 
+Neden copy constructor yazmayayim ? derleyicinin yazdığı kod işimize gelmiyorsa. Senin yazdığın cc benim başımı belaya sokar diyorsan kendin yazmalısın. 
+
+Bazı sınıfların şöyle implement edilmesi bir mecburiyet. 
+
+Standart kütüphanenin string sınıfını kendimiz yazdığımızı düşünelim. Acaba standart kütüphanenin string sınıfı nasıl bir sınıf ?? 
+String sınıfı türünden bir nesnenin değeri bir yazı. 
+Bu yazı nerede tutuluyor ? dinamik bir bellek alanında tutuluyor. Heap’de tutuluyor. 
+String sınıfını detaylı da öğrenicez. 
+Siz bir string sınıfı oluşturduğunuz zaman heap’den bir bellek alanı allocate ediliyor ve o bellek nesnesinin adresini tutan bir pointer var. Bu pointer string nesnesinin veri elemanı. 
+
+
+![image](https://github.com/Mserhatarslan/Cplusplus/assets/63358327/be32be04-5171-4fef-9274-ad6c0f526234)
+
+str nesnesinin veri elemanı olan pointerları kullanarak yazıya erişiyoruz. 
+Aslında 3 tane pointer var. 
+Pointerlardan bir tanesi allocate edilen bellek bloğunun adresini tutuyor. Diğeri, yazının uzunluğunun elde edilmesi için en son adresi tutuyor. Diğeri allocate edilen bellek bloğunun sonunu gösteriyor. 
+
+![image](https://github.com/Mserhatarslan/Cplusplus/assets/63358327/984110dd-eaa7-4646-9742-fe493534f93c)
+
+
+Kodunu da yazalım. 
+std::string str{“necati ergin c++ eğitimi veriyor”};
+std::string s2 = str; 
+S2 için copy constructor çağrılacak değil mi ? evet. 
+Bu sınıfın kodunu ben yazıyor olsaydım bu sınıfın copy constructorını derleyicinin yazımına bıraksaydım derleyicinin yazdığı copy constructor sınıfın veri elemanlarını diğer nesnenin veri elemanlarından kopyalayacaktı değil mi ? evet. Ama bu felaket olur. Value type kalmaz mı. Bunun pointerları buna kopyalanır. Yani her iki nesne de aynı bellek bloğunu gösterir hale gelir. Bu durumda str nesnesi vasıtasıyla yazıyı değiştirdiğimiz s’nin de yazısı değişir.value type özelliği kalmaz. Bu şekilde de implemente edilirse programın çalışma zamanında oluşacak tanımsız davranışlar yüzünden dangling pointerlar yüzünden başım ciddi derde girer. Sınıfınızın veri elemanları handlerlar ise yani pointer veya referans gibi varlıklarsa onların doğrudan kopyalanması başka bir semantik yapı oluşturuyor. Değerlerini aynı hale getiriyor ama değerlerini birbirine bağlı kılıyor. 
+
+Str nesnesinin destructorı çağrıldığında kaynağı geri vermesi gerekir. Str nesnesinin hayatı bitti ama s2 nesnesi hala hayatta. Bu bellek alanı free edilmiş olur. S2’nin elemanı olan pointerlar dangling hale gelir. 
+Tanımsız davranış olmaması için
+value type’ın korunması için
+
+Benim nasıl bir copy constructor yazmam gerekir? 
+Pointerlar kopyalanmayacak. S2 ayrı bir allocation yapacak. Üstelik allocate ettiği bellek bloğuna diğer nesne için allocate edilmiş bellek bloğundaki öğeleri kopyalayacak. Yani pointerları kopyalama yerine kaynak edinip pointerların gösterdiği kaynakları kopyalayacak. 
+
+Derleyiciye bırakırsak derleyicinin yaptığı kopyalamaya  shallow copy ( sığ kopyalama) denir. Sadece pointerı kopyalıyor. 
+Gerçekte olması gereken pointerların kopyalanması değil, pointerların gösterdiği varlıkların kopyalanması gerekiyor. Buna da deep copy deniyor. 
+
+İşte bu durumda copy constructoru kendimiz yazmalıyız. Aksi halde başımız cidde dertte. 
+Ama bu durumların üretimde karşılaşılması çok seyrek. 
+
+```
+class Person{
+private:
+	std::string name;
+	std::string surname;
+	std::string address;  
+};
+```
+Şu şekilde yazarsan güvenebilirsin. Ama bunun yerine 
+
+```
+class Person{
+private:
+	char* pname;
+	char* psurname;
+	char* paddress;  
+};
+```
+Şimdi derleyicinin yazdığı copy constructor felaket olur. 
+
+copy constructoru kendimiz yazmamız gerektiğimiz bir senaryo yaratalım. Profesyonel düzeyde olmayacak. 
+Copy constructorun neden programcı tarafından yazılması gerektiğini anlamak için yazıyoruz. 
+
+cstring == Null terminated byte stream ( null karakter olduğunu belirtiyor yanının sonunda)
+
+Burada hoca kod örneği yazdı. class Sentence ; yazzzzz. 
+
+1:53 dakika. 
+
+Dangling pointer kullanmış olduk burada bu da tanımsız davranış. Buradaki kodu yaz….
+
+value type’ı da bozuyor. 
+Derleyicinin yazdığı copy constructor işimizi burada bozuyor. Nereden baksanız problem. 
+
+Deep copy yapmamız gerekir burada, diğer nesnenin kaynağını kopyalamicaz kendimiz yeni kaynak oluşturmamız gerekiyor. 
+
+Eğer sizin sınıfınızın elemanı ya da elemanları handellarsa tipik olarak deep copy yapmanız gerekiyor. 
+
+Eğer copy constructor’ı kendiniz yazıyorsanız sınıfın diğer elemanlarının da copy constructor edilmesinden siz sorumlusunuz. 
+Copy constructorı kendiniz yazıyorsanız artık sınıfın tüm non static veri elemanlarının hayata getirilmesinden siz sorumlusunuz. 
+
+
+Böylece copy constructorun varlık nedenini bu örnekte daha iyi gördük. Artık böyle bir Copy constructorun varlığı value type olma varlığını bozmadı ve programın çalışma zamanında tanımsız davranış durumları oluşmadı. —-> kendimiz yazdık copy constructoru
+
+Bir sınıf nesnesinin değerini bir başka sınıf nesnesinden alarak hayata gelmesi başka, hayatta olan bir sınıf nesnesine bir başka sınıf nesnesinin atanması başka. 
+
+```
+class Nec
+{
+};
+
+Nec x;
+Nec y;
+
+x = y; 
+```
+x’de y’de zaten hayatta. Bu assignment, initialization değil. 
+
+Atama bir nesnenin değerini değiştirme semantiğidir. 
+Ama yine value type özelliğinin bozulmaması gerekiyor. X’i değiştirdiğimde y değişmeyecek, y’yi değiştirdiğimde x değişmeyecek. Yapışık ikizler olmayacak. C++’da burada çok önemli kurallar var. 
+
+Hayatta olan bir sınıf nesnesine atama yapıldığında atama operatörünün sağ tarafındaki ifade L value expression ise bu atama sınıfın bir özel üye fonksiyonuna çağrı yapılması sonucu doğuruyor. Bu üye fonksiyonun ismi copy assignment.
+
+copy assignment, operator overloading dediğimiz bir mekanizmanın da bir bileşeni olduğu için bu işi yapan fonksiyonun ismi özel bir şekilde oluşturulmak zorunda. 
+
+x=y; dediğimizde derleyici aslında şu şekilde ele alınacak derleyici tarafından 
+x.operator = (y);
+
+Burada çağrılan fonksiyon sınıfın üye fonksiyonu mu ? evet
+Non static üye fonksiyonu mu ? evet
+Special member function mu ? evet
+Special member function olması bu fonksiyonun kodunun derleyici tarafından yazılabileceği anlamına geliyor mu ? evet
+Bu fonksiyonun içinde this pointerını kullansam kimin adresini kullanmış olurum ? x
+
+```
+
+using namespace std;
+int main()
+{
+	string name1{"serhat"};
+	string name2{"arslan"};
+	name2 = name1; 
+
+}
+```
+
+Burada şimdi copy assignment mı çağrılacak ? kesinlikle. 
+Yani bu kodu böyle yazmakla şöyle yazmak arasında hiçbir fark yok. 
+
+```
+using namespace std;
+int main()
+{
+	string name1{"serhat"};
+	string name2{"arslan"};
+	name2 = name1; 
+ 	name2.operator= (name1); 
+}
+```
+Siz böyle yazsanız bile derleyici aşağıdaki gibi bir fonksiyon çağrısına dönüştürüyor. Operator overloading. 
+String bir value type burada. 
+
+
+
+
+# 17 Şubat 2024 11. C++ Dersinden Notlar;
  
 Sınıfların özel üye fonksiyonları belirli koşullar sağlandığında derleyici tarafından kodları yazılabilen yani default edilebilen fonksiyonlar. Bunlar sınıf nesnelerinin hayata gelmesi, hayatının bitmesi ve kopyalanması ile ilgili fonksiyonlar. 6 tane fonksiyonumuz var. 
 
