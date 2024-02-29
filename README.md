@@ -1,6 +1,6 @@
 # C++-Kursu-Notları-
 
-11 Şubat 10. C++ Dersinden Notlar; 
+# 11 Şubat 10. C++ Dersinden Notlar; 
 
 constructor initializer list CIL
 Member initializer list MIL
