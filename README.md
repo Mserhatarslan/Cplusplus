@@ -1827,7 +1827,8 @@ cout << x;
 cout.operator<<(x); 
 ```
 Çok basit bir sınıf yazalım. 
-``````
+```
+
 class Counter{
 public: 
 	Counter(int x = 0) : mx{0}  {}
