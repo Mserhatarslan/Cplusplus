@@ -1619,11 +1619,17 @@ Kuvvetli bir çağrışım yok.
 Amaç client kodu kullananların işini kolaylaştırmak. 
 
 Bazı operatörler ise sadece member operator function olarak overload edebiliyorlar. 
+
 Bu operatörler için free function yolu kapalı. 
+
 Mesela susbscript operatörü  -> [ ]
+
 Fonksiyon çağrı operatörü -> ( ) 
+
 Atama operatörü -> = 
+
 Arrow operator -> ->
+
 Member function olmak zorunda. 
 
 
