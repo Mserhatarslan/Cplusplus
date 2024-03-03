@@ -1553,3 +1553,703 @@ int => Myclass  => user defined conversion
 
 udc + udc = derleyici bu dönüşümü yapmaz. 
 
+# 25 Şubat 2024 14. Ders 
+
+Dünkü dersimizde operator overloading konusuna giriş yaptık. Kısa bir hatırlatma; 
+
+
+Sınıf nesneleri operatörlerin operandları olduğunda derleyici operatöün operandı olmuş sınıf nesnesini bir fonksiyonun çağrısına dönüştürüyor. Bu mekanizmaya operator overloading deniyor. 
+
+Amaç, kolay kod yazmak, okunabilirliği artırmak. 
+İç içe fonksiyon çağrıları yapmak yerine programın çalışma zamanında ilave bir maliyet getirmeden sınıf nesnelerini operatörlerin bulunduğu ifadelerde kullanmak kodun yazılmasını, okunmasını kolaylaştırıyor. 
+Kritik 2 nokta var; 
+Run time’a yönelik bir araç seti değil. Programın çalışma zamanına ilave bir yük getirmiyor. Derleme zamanına yönelik bir araç seti. 
+
+Operator overloadin’de kurallara uyulmak zorunda. Derleyici derleme zamanında kontrol ediyor bu kuralları. 10 civarında kural var. 
+
+2 ayrı yol var. Operator overloading’in gerçekletirilebilmesi için.
+
+Bir free functiın oluşturmak (global fonksiyon)  —> global oeprator function
+Bir sınıfın non static üye fonksiyonu olarak tanımlamak —> member operator function
+
+Static üye fonksiyonlar operator overloading sentaksında kullanılmıyorlar. 
+
+İlk kural , operator overloading’den bahsedebilmemiz için söz konusu operatörün C++’ın operator setinde bulunması gerekiyor. 
+
+X @ y —> olmayan operatörün yüklemesi olmaz. 
+
+Operator kümesinde olmayan bir operatör yüklenemez. 
+Her operator overloading’e açık değil. Overload edilmeyen operatörler var. Overload edilemeyen operatörler ; 
+
+. (member selection dot) 
+:: (scope resolution operator)
+? : ( ternary operator) 
+sizeof 
+.*  ( C’de yok, C++’da var bu operator) 
+typeid 
+
+
+
+-> bu operator overload edilebiliyor  ve çok da sık kullanılıyor. 
+[] 
+* 
+Bu operatorler overload edilebiliyor. 
+
+
+Bazı operatörlerin overload edilebilmesi başka, üretimde yaygın olarak kullanılması bambaşka. Mesela lojik ve operatörü overload edilebilir ama kullanım alanları çok sıra dışı senaryolar için söz konusu olabilir. 
+
+Operatörün kullanımının intuitive olması gerekir. 
+Client kod bunu kullanırken yadırgamayacak. Yeni başlayan programcıların sezgisel olmayan, doğal durmayan overloadinglerden uzak durması gerekiyor. Yani bir çağrışım mekanizmasının söz konusu olması gerekiyor. 
+
+// myfighter  & enemy_fighter 
+
+Hiçbir çağrışım yok. 
+
+// image >> filter 
+
+Kuvvetli bir çağrışım yok.
+
+Amaç client kodu kullananların işini kolaylaştırmak. 
+
+Bazı operatörler ise sadece member operator function olarak overload edebiliyorlar. 
+Bu operatörler için free function yolu kapalı. 
+Mesela susbscript operatörü  -> [ ]
+Fonksiyon çağrı operatörü -> ( ) 
+Atama operatörü -> = 
+Arrow operator -> ->
+Member function olmak zorunda. 
+
+
+Operator overload olabilmesi için operatörün operandlarından en az birinin bir sınıf türünden ya da bir enum türünden olması gerekiyor.  
+
+Unary operator ise operandının 
+Binary operator ise operandlarından en az birinin bir sınıf türünden ya da enum türünden olması gerekiyor. 
+
+Operator fonksiyonları keyfi biçimde isimlendirilemiyorlar. 
+Operator fonksiyonun isimleri operator keyword’ünü içermek zorunda. Bundan sonra hangi operatörü overload ediyorsa o operatörünün tokenı gelmek zorunda. 
+
+operator!
+operator+ 
+operator<< gibi.
+Operatörlerin arity’si değiştirilemez. Kastedilen operatörün unary ya da binary olması. 
+Yani binary operatörü binary operator olarak overload etmek zorundasınız. 
+Unary operatörü unary operator olarak overload etmek zorundasınız. 
+Derleyici bunu compile time’da kontrol ediyor. Kurala uyulmazsa sentaks hatası. 
+
+Ne demek bu ? 
+ Örneğin x ve y sınıf nesneleri olsun. 
+
+x>y  
+> operatörü binary operator ( 2 operand aldığı için) 
+Binary operator olarakk overload edilmesi gerek. 
+
+
+Biz bunu global fonksiyon olarak overload etmek istiyorsak bu fonksiyon aslında şöyle bir fonksiyon olacak. 
+
+bool operator>(const Myclass&, const Myclass&)
+Derleyici bu fonksiyonu çağıracak. Bu fonksiyona operatörümüzün sol operandını ve sağ operandını sırasıylr fonksiyonun 1. Ve 2. Parametrelerine argüman olarak gönderilecek. Yani şöyle bir fonksiyon çağrısı gerçekleşecek. 
+
+operator(x,y) 
+
+
+Ama bu global operator fonksiyonu değil de member operator function olarak overload edilseydi bu durumda derleyici binary operatorün sol operandını fonksiyonun çağrıldığı nesne olarak alacaktı. Yani fonksiyon içinde this pointerı sol operandın adresi olacaktı yani *this x olacak.  Onun > fonksiyonuna çağrı yapacaktı ve y’yi aegüman olarak gönderecekti. 
+
+
+x > y x.operator(y) 
+
+Binary operatörler global operatör fonksiyonu olarak overload edildiğinde fonksiyonun kaç tane parametre değişkeni olmalı ? 2 
+Ama üye operator fonksiyonu olduğunda 1 tane parametresinin olması gerekiyor. 
+```
+class Nec {
+public: 
+	bool operator>(const Can&, const Can&)const; 
+};
+```
+Sentaks hatası çünkü 2 adet parametre değişkeni var. 1 tane olması gerekir. Üye operator fonksiyonu çünkü. Parametre değişkeni olmasaydı da sentaks hatası. 
+
+Aynı fonksiyonu bu sefer global operator fonksiyonu olarak overload ediyorum. 
+
+class Nec {
+public: 
+};
+bool operator>(const Can&); 
+
+Geçerli değil çünkü 2 parametresinin olması gerekiyor. 
+Derleyicinin verdiği diagnostic; 
+
+Binary ‘operator >’ has too few parameters
+
+Operatorlerin arity’sini korumak zorundasınız. 
+
+Bazı tokenların 2 ayrı operator görevi  vardır. 
++x -> sign operator 
+ a+ b -> addition
+
+-i -> sign operator 
+a - b -> subtraction operator 
+
+& -> address of operator 
+x & y -> bitwise and operator 
+
+* ptr  -> dereferencing operator 
+a * b -> çarpma operatoru 
+
+Dolaysıyla bunları binary veya unary olarak overload ettiğimizde farklı operatorleri overload etmiş oluyoruz. 
+
+
+
+Şimdi gelelim unary operatörlerin kullanımına. Global operator fonksiyonu olmaları durumunda örneğin x bir sınıf nesnesi ise derleyici operand olan ifadeyi fonksiyona argüman olarak gönderecek. 
+!x   operator!(x) 
+
+Member operator function olarak overload edildiğinde derleyici operatörün operandı olan ifadeyi *this nesnesi olarak alacak.  Yani o nesnesin operator fonksiyonunu çağıracak. Fonksiyonun parametre değişkeni olmamalı. 
+```
+class Nec {
+public: 
+	bool operator!();
+};
+```
+Member operator function 
+
+İstisnasız tüm operatör fonksiyonları isimleri ile çağrılabilir. 
+Öyle yerler var ki, isimleri ile çağırmayı  tercih edebiliyoruz ya da mecbur kalıyoruz. 
+
+x + y                       x.operator+(y) —-> member operator function
+x + y 		        operator+(x,y) —> global operator function
+
+Biri hariç hiçbir operator fonksiyonu varsayılan argüman alamaz. Varsayılan argüman mekanizması kapatılmış. Hangisi hariç ? fonksiyon çağrı operatörü. 
+```
+class Nec {
+Public: 	
+	Nec operator+(int x = 5) ;
+}; 
+```
+Sentaks hatası. 
+
+```
+class Nec {
+Public: 	
+	Nec operator()(int x = 5)const ;
+}; 
+```
+Sentaks hatası değil. 
+
+Operator overloading mekanizmasında operatörlerin önceliğini ve öncelelik yönünü değiştiremezsiniz. 
+
+
+priority / precedence
+Associativity ( left or right) 
+
+```
+class Nec {
+public: 
+};
+Nec operator+(const Nec&, const Nec&); 
+Nec operator-(const Nec&, const Nec&); 
+Nec operator>>(const Nec&, const Nec&); 
+
+Nec operator*(const Nec&, const Nec&); 
+int main()
+{
+	Nec n1, n2, n3, n4, n5; 
+	n5 = ((n1 + (n2 * n3)) - n1) >> n4;  // derleyici bu şekilde ele alacak kodu
+};
+```
+Global operator function olduğunu düşünelim. 
+Üye operator fonksiyonu kullanımamış.
+
+En yüksek öncelikle operator çarpma operatörü. Sonra toplama ve çıkarma operatörleri aynı öncelik seviyesinde ama soldan sağa (left associativity) 
+Bu kod legal. 
+
+Bütün operator fonksiyonları isimleriyle çağrılabilir. Hadi yapalım. 
+
+
+n5.operator= (operator>>(operator-(operator+(n1, operator*(n2,n3)), n1), n4);
+
+Bu şekilde de yazılabilir. İsimleriyle çağırdık. 
+
+Şimdi üye operator fonksiyonu olarak ele alalım. 
+
+```
+class Nec {
+public: 
+	Nec operator+(const Nec&); 
+Nec operator-(const Nec&,); 
+Nec operator>>(const Nec&); 
+
+Nec operator*(const Nec&); 
+
+};
+int main()
+{
+	Nec n1, n2, n3, n4, n5; 
+	n5 = ((n1 + (n2 * n3)) - n1) >> n4;  // derleyici bu şekilde ele alacak kodu
+n5.operator= (n1.operator+(n2.operator*(n3)).operator-(n1).operator>>(n4));
+};
+```
+
+Operatörlerin öncelik seviyesi ve yönünü değiştiremeyiz. 
+
+Neden global operator fonksiyonu da var ? o zaman şunu sağlama imkanı kalmazdı. 
+
+x + 5 
+
+
+X bir sınıf nesnesi ama 5 bir sınıf nesnesi değil. 5 primitive türden. 
+Bunu şöyle bir çağrıya dönüştürebiliriz. 
+x. operator(5); 
+Peki şöyle olsaydı ? 
+
+5 + x 
+5.operator+(x)
+Member operator function artık kullanılamaz. Global operator function burada devreye giriyor. 
+Başka bir nokta daha var. 
+Diyelim ki size ait olmayan bir sınıf var. Ama siz de başka bir sınıf oluşturuyorsunuz. 
+```
+class Nec {
+public: 
+}; 
+
+class Erg
+{
+}; 
+
+```
+Diyelim ki Nec sınıfı türünden bir nesne ile Erg sınıfı türünden bir nesneyi toplamak istiyorsunuz. O zaman sol operand Nec sınıfı türünden olmak zorunda. O zaman Nec’in member function olmak zorunda. Ama Nec sınıfı bizim değil ki. Bana ait değil, zaten var. Ben Erg sınıfını yazıyorum. Şimdi hala global bir operator fonksiyonu yazabilirim. 
+
+>>? operator+(const Nec&, const Erg&)
+
+Global operator fonksiyonu öyle yerler var ki, olmak zorunda. Bazı yerlerde iş programcının tercihine kalabilir. Üye operatör fonksiyonu mu olsun global operatör fonksiyonu mu. Ama bazı yerlerde  global operatör fonksiyonu olmak zorunda. 
+
+Başka bir örnek, int türden bir değişkenin değerini formatlı olarak standard output’a yazdırmak istersem operator overloading’den faydalanıyorum. 
+```
+int x = 5; 
+cout << x; 
+cout.operator<<(x); 
+```
+Çok basit bir sınıf yazalım. 
+``````
+class Counter{
+public: 
+	Counter(int x = 0) : mx{0}  {}
+private:
+	Int mx; 
+}; 
+
+Int main()
+{
+	cout << Counter {47};     (1)
+
+}
+```
+
+(1) : şimdi üye operatör fonksiyonu olsaydı bu hangi sınıfın üye operatör fonksiyonu olmalıydı ? cout hangi sınıf türündense onun, o sınıfın ismi ostream. Ama ostream sınıfı bana ait değil. Standard kütüphanenin kodu. Standard kütüphanede yapılan değişiklikler tanımsız davranış niteliğinde. Ama global operator fonksiyonuna yazabilirim. 
+
+```
+class Counter{
+public: 
+	Counter(int x = 0) : mx{0}  {}
+friend std::ostream& operator<<(std::ostream& os, const Counter& c) //hidden friend
+{
+	return os << ‘(‘ << c.mx<<’)’;
+}
+private:
+	Int mx; 
+}; 
+
+
+
+Int main()
+{
+	cout << Counter {47} << “ali” <<Counter{98}; 
+
+}
+```
+
+Global operator fonksiyonu gerekiyor bazı durumlar için. 
+
+
+Fonksiyonların geri dönüş değerlerinin türünün ne olması gerektiğini belirleyen semantik yapıdır. O sınıf neyi temsil ediyor ? 
+
+```
+class Date{
+	operator+(int days)const; 
+operator-(const Date&)const; 
+}; 
+
+```
+tarih + gün = tarih olması gerekir geri dönüş değerinin 
+
+tarih - gün =  gün olması gerekir geri dönüş değerinin
+Tarih karşılaştırmasında bool olması gerekir geri dönüş değerinin
+
+Fonksiyonun geri dönüş değerinin türü problem domeini ile ilgili. 
+
+Fonksiyonun geri dönüş değerinin türü referans türü olmalı mı ?
+
+m1+m2 —> PR value
+
+m1.operator+(m2)
+
+Toplama çarpma çıkarma giib operatör fonksiyonlarının geri dönüş değeri türünün L value referans olmaması gerekiyor. L value yaparsanız semantik olarak yanlış olacağı gibi kime referans olacak bu ? saçma. 
+Otomatik ömürlü nesneye referans döndüremeyeceğimize göre tanımsız davranış olur. 
+Referans türü yaparsanız bir nesneye referans olması gerekir. 
+Eğer operatör doğal olarak operatörün oluşturudğu ifade PR value expression ise operatörün oluşturdğu ifadenin değeri aslında biziö fonksiyonun geri dönüş değeri olduğuna göre bu durumda fonksiyonun geri dönüş değerinin value type, referans türü olmaması gerekiyor. 
+Ama her operatör için böyle değil. 
+
+x=y 
+++y
+x+=y
+*ptr
+a[4]
+
+Bu ifadelerin hepsi L value expression, bu ifadelerin value kategorisi L value
+
+Bunların hepsi bir fonksiyon çağrısı, fonksiyon çağrı ifadesinin L value exp olması için fonksiyon geri dönüş türünün L value expr olması gerekir. 
+
+Fonksiyonun mutability açısından deeğerlendirilmes; 
+Toplama operatörünün bir side effect’i yoktur. ( yan etkisi) 
+x+y
+Yan etkisinin olmaması demek bu işlemden x ve y değişmeyecek. Bu operatör global operator fonksiyonu ise referans semantiği ile argümanlarını alıyorsa kesinlikle parametrlerinin const L value reference olması gerekir. 
+
+T operator+(const T&, const T&); 
+
+
+T operator+( T&, T&);  sentaks hatası olmazdı ama çok kaba olurdu. Dikkat etttt…
+
+
+Eğer bu üye operator fonksiyonu ise; 
+x.operator+(y) 
+X’in değişmeyeceğini gösteren nedir ? 
+
+```
+class Nec{
+public: 
+	operator+(const Nec&)const;            
+};
+```
+
+Const correctness açısından böyle. 
+
+x+= y; 
+Bu işlemden y değişmeyecek, x değişecek
+
+```
+class Nec{
+public: 
+	operator+(const Nec&);            
+};
+
+```
+x const member function değil. Çünkü değişecek. 
+
+Operator fonksiyonları overload edilebilir. Yani function overloading ile operator overloading birlikte kullanılabilir. 
+
+Standard kütüphaneden operator overloading örnekleri; 
+String sınıfı en tipik örneklerden biri. 
+
+
+Referans semantiği neden var ? pointer semantiği ile assembly düzeyinde aynı ama dil katmanında farklı. Eğer referans semantiği olmasaydı operator overloading olamazdı. 
+
+Sınıf nesneniz var. 
+
+Myclass m1,m2; 
+m1 + m2; 
+
+Referans semantiğini zorunlu kılan operator overloading mekanizması. 
+
+```
+class Myclass{
+Public: 
+	Myclass& operator=(const Myclass&);
+	Myclass& operator+(const Myclass&);
+};
+
+Int main()
+{
+	Myclass m1, m2; 
+	m1+= m2;
+};
+
+```
+Böyle bir mekanizma var. Artı eşittir operatörünü de implemente etmeniz gerekir. 
+
+=========================================
+Global operatör fonksiyonu mu olsun üye operatör fonksiyonu mu ?
+Programcının kararı 2 yönde de olabilir. Şöyle bir ilke var. 
+Simetrik operatörleri overload ederken global operatör fonksiyon kullanılabilir. 
+a + b
+b + a
+
+İkisi aynı anlama geliyorsa, aynı soyutlama ise global operatör fonksiyonu.
+Global operatör fonksiyonu olması dönüşümlere de izin veriyor. Birinci operandın sınıf türünden olmaması durumunda constructor da explicit değilse dönüşüme izin veriyor. 
+
+
+Sınıf nesnesini değiştiren operatörleri üye operatör fonksiyonu yapılabilir. 
+
+Simetri bozuluyorsa çözüm çoğunlukla üye operatör fonksiyonu. 
+
+mydate - ndays
+
+Tarihten gün çıkartılır ama günden tarih çıkarılmaz. Simetri söz konusu değil. Üye operatör fonksiyonu kullan. Programcıların uyduğu ilkelerden biri. 
+
+Gerçekten bir sınıf oluşturalım ve overloading ile ilgili kodu yazalım. 
+Fraction f1 {2,7}; 
+
+int eşdeğeri nesneleri int türden değişkenler gibi kullanılan sınıf oluşturucaz. Bu tür sınıflar c++ dilinde çok popüler. Buna light wrapper sınıfları deniyor.. 
+Yani tam sayı ya da gerçek sayı türünü doğrudan kullanmak yerine onu bir sınıfla ifade ediyorsunuz ve o sınıf türünden nesneleri kullanıyorsunuz. C++ bu konuda çok başarılı bir dil. Böyle sarmalayıcı sınıflar zero cost abstraction denen sınıf maliyetle implemente edebiliyorlar. 
+
+Ilave bir maliyeti yok demek. 
+Modern c++ ile dile eklenen bir kütüphane var, chrono kütüphanesi. Tarih zaman işlemleri ile ilgili kütüphane. Değerleri süre olan türler. Aslında ben bir saniye değerini bir tam sayı değeri ile ifade edebilirim. Fakat bir saniye değerini şöyle ifade etmiş chrono kütüphanesi. 
+2 farklı kodu inceleyelim. 
+
+long long msx = 848484954; 
+
+
+Milliseconds ms{3283883}; 
+
+Milliseconds’un kendisi bir tür. 
+Derdini daha iyi ifade ediyor, tür dönüşümlerini daha iyi kontrol etmenizi sağlıyor. exception handling konusunda daha başarılı. 
+Düşünün ki assembly kodu aynı. Interface’e kazandırmış oluyoruz. Derleyicilerin uyguladığı compile time’daki optimizasyonlar zero cost abstraction’a destek veriyor. 
+
+Zero cost abstraction olmasını sağlayan ; 
+Dilin araçları
+Derleyicinin yaptığı optimizasyonlar
+
+Strong type adında bir kavram var. Belirli yerlerde primitive türlerini kullanmak yerine primitive türlerin sarmalayan strong type olarak nitelenen primitive türlerin yerine geçen sınıf türlerini kullanmak büyük avantajlar sağlıyor. Maliyet artışı olmadan dilin adeta seviyesini sağlıyor. Daha yüksek seviyede daha yüksek soyutlama ile kod yazma imkanı veriyor ama maliyet açısından herhangi bir maliyeti olmuyor. 
+
+Her abstraction zero cost değil. Özellikle nesne yönelim programlama tarafındaki soyutlamalar maliyetli soyutlamalar. 
+
+```
+class Myclass{
+//….
+public: 
+	Void foo();
+}; 
+
+int main()
+{
+	Myclass* p = new Myclass; 
+	////
+	delete p; 
+}
+
+class Myclass{
+//….
+}; 
+
+int main()
+{
+	std::unique_ptr<Myclass> p(new Myclass);
+	p->bar(); 
+	
+}
+
+```
+
+Assembly düzeyinde hiçbir farklılık yok. Storage ihtiyacı aynı. Bu da bir wraple. Myclass pointerını sarmalıyor. Yani diyor ki, Myclass pointerını doğrudan kullanma. Bu sınıfı kullan, bu sınıf Myclass pointerını kontrollü bir şekilde kullanmana izin verecek interface oluştursun. Bu da mesela bir zero cost abstraction. 
+
+Burada fonksiyon çağrı maliyeti var, nasıl zero cost abstraction olabilir ? inline expansion. 
+Burada tamamen zero cost abstraction’a destek olan optimizasyon, inline expansion. 
+
+int eşdeğeri nesneleri int türden değişkenler gibi kullanılan sınıf oluşturucaz.
+include koruması, multiple inclusion guard ile header dosyasının oluşturulmasına başlandı 
+#pragma once → standard değil. 
+
+cint.h file; 
+```
+#if !defined CINT_H
+#define CINT_H
+
+class Cint{
+
+public:
+	Cint() = default; 
+	explicit Cint(int val) : mval{val} { };
+private: 
+	int mval{}; 
+
+
+
+};
+
+#endif
+```
+
+
+
+main.cpp file;
+
+```
+#include “cint.h”
+
+Int main()
+{
+	Cint c1 
+
+}
+
+```
+
+Formatlı giriş çıkış işlemleri
+Formatlı giriş çıkış fonksiyonları : printf, scanf 
+Formatsız giriş çıkış fonksiyonları : fread, fwrite
+
+Formatlı demek, çıktının veya girdinin bir yazı olması demek. 3
+
+Aksi yönde karar almanızı gerektirecek bir durum söz konusu değilse, formatlı giriş çıkış işlemleri için operator left shift ve operator right shift fonksiyonları yazıyorsunuz. Yani bitsel sola kaydırma ve bitsel sağa kaydırma operaötlerini overload ediyorsunuz. 
+
+Neden böyle yapıyoruz ? standard kütüphane bu opearötleri overload ettiği için. 
+Generic programlama tarafında bu çok çok önemli . Türden bağımsız bir kod. 
+Generic kod derleyicinin yazacağı kod demektir. 
+
+C++’ın giriş çıkış kütüphanesi o kadar çok araç kullanılıyor kombine halinde.
+Generic programming, object oriented programming, functional programming. 
+
+İsmi ostream ve istream adında sınıflar var. Bunları tür eş isimleri, type alias
+
+
+std::cout nesnesinin türü ostream
+Std::cin nesnesinin türü istream
+
+```
+void foo(std::ostream); 
+int main()
+{
+	foo(std::cout);
+}; 
+```
+
+Sentaks hatası. Bu sınıf kopyalamaya kapatılmış bir sınıf. Kopyalama semantiği ile bir fonksiyona geçmem mümkün değil. O zaman bu nesneyi bu fonksiyona geçmek için referans semantiğini kullanıyorum. 
+
+```
+void foo(std::ostream& os); 
+int main()
+{
+	foo(std::cout);
+}; 
+
+class 0stream{
+
+public: 
+	0stream& operator<<(int) 
+	0stream& operator<<(double) 
+
+};
+
+int main()
+{
+	int ival{4}; 
+	double dval{4.5};
+	cout << ival <<dval; 
+	cout.operator<<(ival).operator<<(dval);
+}
+```
+
+Yukarıdaki cout ile aşağıdaki cout arasında hiçbir fark yok. Hem function overloading hem operator overloading. 
+
+
+
+
+cint.h file;
+
+```
+
+#if !defined CINT_H
+#define CINT_H
+
+#include <ostream> 
+#include <istream> 
+class Cint{
+
+public:
+	Cint() = default; 
+	explicit Cint(int val) : mval{val} { };
+	friend std::ostream& operator<<(std::ostream&os, const Cint& c) 
+	{
+		return os  << ‘(‘ << c.mal << ‘)’;  // one liner function
+		
+
+	}
+
+
+	friend std::istream& operator>>(std::istream& is, Cint& c) 
+	{
+		return is >> c.mval; 
+
+	}
+
+	friend Cint operator+(const Cint& c1, const Cint& c2) 
+	{
+		return Cint{c1.mval + c2.mval}; 
+	}
+	
+private: 
+	int mval{}; 
+};
+
+#endif
+
+
+
+
+main.cpp file;
+
+```
+
+#include “cint.h”
+
+Int main()
+{
+	Cint c1 {35}, c2{4}, c3{56},c4; 
+	cout << c1 << c2 <<c3; 
+	operator<< (operator<<(operator<<(cout, c1), c2) ,c3); 
+	cout << “tam sayi giriniz :”; 
+	cin >> c4; 
+	Std:cout << “girilen sayi” << c4; 
+	cout << c1 + c2;  
+
+
+}
+
+```
+
+Başlık dosyasında bir using bildirimi asla yapma. Çok kaba bir hata. Standard kütüphanenin öğelerini kendi başlık dosyanda kullancağın zaman nitelenmiş isim olarak kullan. Std::ostream gibi. 
+
+C++20 standardı ile yeni bir kütüphane eklendi. Formatlı  Giriş çıkış işlemlerini iostream kütüphanesi ile yapmak yerine format kütüphanesi ile yapmak çok ciddi bir fark yaratıyor. 
+
+std:: format kütüphanesi, araştır. 
+
+
+cout << x 
+
+Cout nesnesi stream’i temsil ediyor.  Biz x’i stream’e veriyoruz. Burada kullanılan fiil, insert fiili. 
+
+x’i streame insert ediyorsunuz. O yüzden operator left shift fonksiyonuna bir çıkış akımına  yazdırmak için overload eden fonksiyonlara inserter demek de popüler olarak yaygın. 
+
+
+cin>> x
+Stream’den karakterleri alıyor o karakterleri kullanarak x’e set ediyor. Extracter deniyor popüler olarak. 
+
+Kalıtım mekanizmasından bahsetti hoca, yazmadım. 
+
+Generic programlama: 
+Ben birden fazla tür için söz konusu olabilecek bir operasyonu bşrş fonksiyon halinde ifade etmem gerekiyor. Burada ayrı ayrı kodlar yazmak yerine derleyiicye kod yazdırmayı sağlayan ayrı bir kod formu kullanabiliyırum. C++’ın gerçek gücü burada. Türden bağımsızlık. Derleyiciye compile time’da kod yazdırıyoruz. C derleyicinden farklı olarak sadece derleme işlemi yapan bir progrma eğil derleyici aynı zamanda bizim için kod yazan bir program. 
+
+Derleyiciye kod yazdıran kod —-> meta code 
+Template dediğimiz araç seti ile yapılıyor. 
+
+```
+template <typename T>
+void func(T x)
+{
+	std::cout << x; 
+}
+
+
+
+int main()
+{
+	func(12); 
+
+}
+```
