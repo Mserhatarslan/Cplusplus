@@ -1582,17 +1582,24 @@ Operator kümesinde olmayan bir operatör yüklenemez.
 Her operator overloading’e açık değil. Overload edilmeyen operatörler var. Overload edilemeyen operatörler ; 
 
 . (member selection dot) 
+
 :: (scope resolution operator)
+
 ? : ( ternary operator) 
+
 sizeof 
+
 .*  ( C’de yok, C++’da var bu operator) 
+
 typeid 
 
 
 
 -> bu operator overload edilebiliyor  ve çok da sık kullanılıyor. 
+
 [] 
-* 
+
+
 Bu operatorler overload edilebiliyor. 
 
 
