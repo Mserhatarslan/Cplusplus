@@ -1639,10 +1639,11 @@ Derleyici bunu compile time’da kontrol ediyor. Kurala uyulmazsa sentaks hatas�
 Ne demek bu ? 
  Örneğin x ve y sınıf nesneleri olsun. 
 
+```
 x>y  
 > operatörü binary operator ( 2 operand aldığı için) 
 Binary operator olarakk overload edilmesi gerek. 
-
+```
 
 Biz bunu global fonksiyon olarak overload etmek istiyorsak bu fonksiyon aslında şöyle bir fonksiyon olacak. 
 
@@ -1816,7 +1817,9 @@ class Erg
 ```
 Diyelim ki Nec sınıfı türünden bir nesne ile Erg sınıfı türünden bir nesneyi toplamak istiyorsunuz. O zaman sol operand Nec sınıfı türünden olmak zorunda. O zaman Nec’in member function olmak zorunda. Ama Nec sınıfı bizim değil ki. Bana ait değil, zaten var. Ben Erg sınıfını yazıyorum. Şimdi hala global bir operator fonksiyonu yazabilirim. 
 
+```
 >>? operator+(const Nec&, const Erg&)
+```
 
 Global operator fonksiyonu öyle yerler var ki, olmak zorunda. Bazı yerlerde iş programcının tercihine kalabilir. Üye operatör fonksiyonu mu olsun global operatör fonksiyonu mu. Ama bazı yerlerde  global operatör fonksiyonu olmak zorunda. 
 
@@ -2189,14 +2192,11 @@ private:
 };
 
 #endif
-
-
-
+```
 
 main.cpp file;
 
 ```
-
 #include “cint.h”
 
 Int main()
