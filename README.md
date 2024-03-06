@@ -2267,3 +2267,648 @@ int main()
 
 }
 ```
+
+
+
+
+# 2 Mart 2024 15. Ders
+
+Operator overloading konusuna giriş yapmıştık. Tipik olarak aritmetik operatörler, binary aritmetik operatörler global, free fonksiyon olarak overload ediliyorlar. Binary simetrik operatörleri global fonksiyon olarak overload edilmeli olarak kabul ediliyor. Fonksiyonun friend olup olmaması 2 açıdan önem taşıyor. 
+1) Friend olduğu zaman sınıfın içinde inline olarak tanımlayabiliyoruz
+2) Böyle friend fonksiyonlara hidden friend deniyor. 
+ADL dediğimiz kuralla bir ilişkisi var. Bazı avantajlar sağlıyor. 
+Formatlı giriş çıkış işlemleri için bitsel sola kaydırma ve sağa kaydırma operatörlerinin overload edillmesini gördük. 
+
+```
+class Cint {
+
+public:
+	Cint() = default;
+	explicit Cint(int val) : mcal{val} { }
+	friend std::ostream& operator<<(std::ostream& os, const Cint& c)
+	{
+		return os << '(' << c.mal << ')';
+	}
+	friend std::istream& operator>>(std::istream& is, Cint& c)
+	{
+		return is >> c.mval;
+	}
+
+	friend Cint operator+(const Cint& c1, const Cint& c2)
+	{
+		return Cint{c1.maval + c2.mval};
+	}
+
+private:
+	int mval{};
+};
+```
+Namescape ve ADL 
+Friend olmasının önemli sonucu sınıfın private bölümüne erişme hakkı olması. 
+
+İşlemli atama operatörleri tipik olarak sınıf nesnesini değiştirdikleri için sınıfın üye fonksiyonu olma eğiliminde. Atama operator fonksiyonları üye fonksiyon olmak zorunda. Sınıf nesnesini değiştirdikleri için const üye fonksiyon olmamaları gerekiyor. 
+
+Burada kullanılan ilginç bir teknik var; 
+
+```
+Cint& operator +=(const Cint& r) 
+{
+	mval += r.mval;
+	return *this;
+}
+```
+(atama operatörü ile oluşturulan ifadeler L value expression’dur) .
+Toplama operatörünü şöyle de overload edebilirdik. 
+
+```
+friend Cint& operator +=(const Cint& c1, const Cint& c2) 
+{
+	Cint temp{c1};
+Temp += c2;
+	Return temp;
+}
+
+
+```
+
+Olası avantajlarından biri sınıfın private bölümüne erişme mecburiyeti artık yok. 
+Bunu biraz daha kompakt halde yazabiliriz. Daha şık. 
+
+```
+friend Cint& operator +=(const Cint& c1, const Cint& c2) 
+{
+	return Cint{c1} += c2; 
+
+}
+```
+
+Derleyicinin optimizasyonunu artırabiliyor. Efficiency açısından bir fark var. 
+
+Bu yazım biçimde scot neyers’ın efficiency c++ kitabında önerdiği bir yazım biçimi. 
+
+Bir de işaret operatörünü değinelim. Onu da overload edebiliyoruz. 
+
+Karşılaştırma operatörleri; operator overloading de en önemli grup karşılaştırma operatörleri. 
+Aslında 2 gruba ayrılıyor. C programlamadan zaten biliyoruz. 
+
+==     !=                      ( equality operators) 
+
+>     >=          <          <= ( relational operators)
+
+Bu iki grup arasında operatör önceliği açısından relational operatörler equality operatörlerinden daha yüksek öncelikli. Karşılaştırma operatörleri binary operatörler ve yan etkileri yok bu operatörlerin. 
+A == b 
+Ne a değişecek ne de b değişecek. 
+
+Karşılaştırma operatörleri bool türden değer üretirler. Geri dönüş değerlerinin de bool olması doğal olanı.  Önermeler ile sorular soruyoruz aslında. A b’den büyük mü gibi ? 
+
+2 tane sınıf nesnesini bu operatörrlerle karşılaştırma yapsam bu operatörler overload edilmemiş ise sentaks hatası. 
+
+Client kodların bu işlemleri yapabilmesini istiyorsak 6 tane karşılaştırma operatörünü overload etmemiz gerekiyor. Fakat C++20 standardı ile çok şey değişti. Bu araç karşılaştırma operatörlerinin kullanımında büyük avantajlar ve kolaylıklar sağlıyor. Problemlİ durumları daha kolay handle ediyor. 
+
+Bu operatörünün ismi three way comparison operator, 3 yollu karşılaştırma operatörler
+< = > 
+Bu operatörü overload ettiğimiz derleyici karşılaştırma operatörleri ile oluşturulmuş ifadeleri belirli kurallar çerçevesinde bu operatörün kullanıldığı ifadeler dönüştürüyor. 
+Bu da bizim karşılaştırma operatörleri için ayrı ayrı kod yazmamızı ortadan kaldırıyor. Üstelik bazı avantajları da var. 
+
+x > 5    ( x bir sınıf nesnesi) 
+5 > x
+
+Derleyici bu operatörün oveload edilmesi durumunda operandlarını yerlerini  değiştirecek şekilde kodu ele alabiliyor. 
+C++20 standardı ile three way comparison operatörünü kullanmak çok avantajlı. İleride görücez. Çok önemli bir araç.  Her ne kadar resmi ismi three way comparison operatör olsa da popüler ismi spaceship operatörü de deniyor. 
+Bunları üstelik default edebiliyorsunuz, C++20 öncesinde default bildirimi sadece special member function için geçerliydi, ama c++20 sonrası bu fonksiyonun da default bildirimini yapabiliyorsunuz, derleyici kodu kendisi yazıyor. 
+
+Standard kütüphane de değişikliğe uğradı, C++20 öncesinde kütüphane ayrı ayrı overload ediyordu. Artık bu operatörlerin ayrı ayrı overload edilmesi yerine space shift operatörü overload ediliyor. 
+
+Çok sık kullanılan bir teknik, sınıfların çok büyük çoğunluğu için 2 tane operatörünün standart kütüphane açısından çok büyük önemi var. Özel bir öneme sahip. 
+Her ne kadar 6 tane karşılaştırma operatörümüz olsa da 2 tanesinin özel bir yeri var. 
+operator <
+operator == 
+
+Diğerlerine göre daha önemli olmasının birkaç tane nedeni var. 
+Birisi standard kütüphanenin kullanımı. Standard kütüphane bazı öğelerinde generic programlama tarafında bu operatörleri kullanıyor. 
+
+Container, veri yapılarını temsil eden sınıflar. 
+Set kütüphanesi, tipik olarak ikili arama ağacı. Değerle erişimin, logaritmik karmaşıklıkla gerçekleştirildiği veri yapısı. 
+
+a < b 
+
+a > b       ========================   b < a
+a >= b       ========================   !(a < b)
+a <= b ============================  !(b<a)
+
+Türlerin çoğu için elinizde küçüktür işlemini yapacak bir araç varsa, diğer relational operatörleri küçüktür yoluyla ifade edebilirim. Bu da kod tekrarını engellemiş olurum, derleyiciye de optimizasyon imkanı sunarım. 
+ Dolayısıyla karşılaştırma operatörlerini overload ederken en çok kullanılan teknik bu. Küçüktür operatörünün kodunu yaz ister global operator function olsun ister member operator function olsun ama diğerleri küçüktür operatörüne çağrı yaparak işini gerçekleştirsin. 
+
+a == b                           !(a < b) && !(b < a)        bu şekilde de ifade edilebilir. 
+
+a != b               !(a==b) 
+
+
+Aşağıdaki operatörlerin overload edilmesini görücez. 
+
+++
+
+- -
+  
+[ ]
+
+*ptr 
+
+ptr->func
+
+Function call operator
+
+Typecast
+
+
+++
+- - 
+Bu operatörlerin overload edilmesi ilginç. 
+
+++x    x++ 
+- - x     x - -
+(Biraz hatırlatma) 
+
+++x 
+y++
+
+Her 2 operatör de yan etki olarak operandı olan nesneyi değiştiriyorr. Operandlarının L value expression olması gerekir C’de. 
+
+Operatörlerin ürettiği değer farklı 
+++x → nesne değerinin 1 fazlası
+y++ -> nesnenin kendi değeri
+
+C++ tarafında ise, bu operatörlerin ön ek formunun L value expression oluşturması, son ek formunun R value PR value expression oluşturması. 
+Dolayısıyla    ++x bu ifade L value expression
+x++ ifadesi R value expression
+
+Şöyle bir problem var. Dilin operatör overloading mekanizmasını oluşturan standard komite üyeleri şöyle bir çözüm bulmak zorundalar. 
+
+
+Peki, ++ ön ek ve son ek olması durumunda farklı semantik yapıya sahip olduğuna göre bunların implementasyonunun ayrı olması gerekiyor. Üretilen değer farklı olduğuna göre farklı kodlar olmalı. 
+
+++x için ayrı bir kod x++ için ayrı kodlar.
+
+Ama bu operatorler unary operatorler. 
+Ister ön ek ister son ek olsun ikisi de unary operator olduğu ikisi için ayrı bir tanım yapmak overloading kurallarını çiğneyecek. imza farklılığı olmayacak yani. 
+
+Burada bir kural uydurmak zorundalar. 
+Derleyicinin hangi fonksiyonun ön ek hangi fonksiyonun son ek olduğunu anlaması için. 
+
+Eğer siz bu fonksiyonları sınıfın üye fonksiyonu olarak yazarsanız unary operator olduğu için parametre değişkeninin olmaması gerekiyor. 
+
+Cint& operator++() —> ön ek artı artı operatoru //prefix    ( paramatresi yok) Geri dönüş değeri L value 
+
+Cint operator++(int) —> son ek artı artı operatoru  // postfix (derleyici 0 değerini argüman olarak ele alacak) dummy int parametresi olacak. Geri dönüş değeri sınıf türünden olacak.  
+
+
+Index operatörü 
+
+a[b]  , *(a+b) ifadesi ile aynı
+b[a]  , *(b+a) ifadesi ile aynı. 
+
+```
+int main()
+{
+
+int a[]= { 3,7,3,4,6,7};
+
+for (int i = 0; i < 6; ++i)
+{
+	std::cout << a[i] << i[a] << *(a+i) << *(i+a) << ‘\n’;
+
+}
+```
+
+x bir sınıf nesnesi
+derleyici x[2] gibi bir ifadeyi bir fonksiyon çağrısına dönüştürecek. 
+Member operation function olmak zorunda.  Global operatör fonksiyonu olarak overload edilmesi sentaks hatası. 
+
+x[2]  ===> x.operator[] (2)   —-> derleyici bu şekilde ele alacak. 
+Array like 
+Pointer like
+
+Standart kütüphanede köşeli parantez operatörünün hangi sınıflar için overload edildiğine bakalım; 
+
+Vector sınıfı 
+
+String sınıfı
+
+Array sınıfı 
+
+Iterator sınıfı
+
+Smart pointer sınıfları 
+
+Hepsinin ortak özelliği array like, pointer like sınıflar olması. Böyle bir interface sunan sınıflar. 
+
+Sınıfın üye operatör fonksiyonu olmak zorunda → köşeli parantez operatörü, L value expression oluşturması gerekiyor 
+
+Köşeli parantez operatörünün geri dönüş değeri türü her zaman L value referans olması gerekir. 
+
+ar[4] = 5; 
+ar.operator[ ](4) = 5, 
+
+Sanki bir dizinin 4 indisli elemanına 5 değerini atamışız gibi bir görüntü var ama aslında bu fonksiyonun geri dönüş değeri olan nesneye biz bu değeri atıyoruz. 
+
+Standart kütüphaneden birkaç örnek verelim. Mesela string sınıfı. 
+
+```
+int main()
+{
+	using namespace std; 
+string name {“serhat arslan”};
+
+for(size_t i{]; i < name.length(); ++i)
+{
+	cout << name[i]<< ‘ ‘ ; 
+	cout << name.operator[](i)<< ‘ ‘ ; 
+}
+}
+```
+Yazının karakterine eriştiriyor. 
+
+İkisi arasında bir fark yok. 
+
+Köşeli parantez operatörü ile ilgili önemli bir detay var. Aynı durum diğer sınıflar için de geçerli. 
+
+```
+#include <isotream>
+#include <vector>
+#include <string>
+
+int main()
+{
+	using namespace std;
+	const string name{"Kaya"};
+	auto c = name[3];
+	name[2]='r';
+}
+
+```
+Const overloading. 
+Sınıf nesnemizin kendisi const ise köşeli parantez operatörü ile eriştiğimiz nesnenin const olması gerekir. 
+
+```
+#include <isotream>
+#include <vector>
+#include <string>
+
+class String {
+public:
+	String();
+	String(const char *p);
+	char& operator[](std::size_t idx);
+	const char& operator[](std::size_t idx)const;
+};
+
+int main()
+{
+	using namespace std;
+	String s("necati");
+	s[2] = 'A';
+}
+
+```
+Const olmayan üye fonksiyonu çağrılacak ve değiştirebilicem. 
+Nesnem const olsaydı function overload resolution kurallarına göre const ile tanımlanan fonksiyon çağrılacaktı ve sentaks hatası olacaktı. Anlamadım 😀
+
+```
+#include <isotream>
+#include <vector>
+#include <string>
+
+class String {
+public:
+	String();
+	String(const char *p);
+	char& operator[](std::size_t idx);
+	const char& operator[](std::size_t idx)const;
+};
+
+int main()
+{
+	using namespace std;
+	const String s("necati");
+	s[2] = 'A';
+}
+
+```
+Sentaks hatası. 
+Köşeli parantez operatör fonksiyonuna örnek verelim. 
+
+
+C dizilerini sarmalayan bir sınıf oluşturmak. 
+int a[4] yerine Array x(4) bunun gibi bir sınıf oluşturmak istiyorum. 
+Std::array zaten bu şekilde. 
+
+std::array<int,5> ar;   // array sınıfını kullanmanın bir sürü avantajı var, ilave maliyeti yok. 
+
+Biz biraz daha primitive düzeyde kod yazalım.
+
+```
+class Array{
+public: 
+	explicit Array(std::size_t n) : msize{}, mp{new int[n]}
+ { 
+std::memset(mp, 0, n* sizeof(int));
+} 
+	Std::size_t size()const
+{
+	return msize; 
+}
+
+	void sort();
+
+	int& operator[](std::size_t idx)
+{
+	return mp[idx];
+}
+
+	const int& operator[](std::size_t idx)const
+{
+	return mp[idx];
+}
+
+private:
+	std::size_t msize; 
+
+	int * mp; 
+};
+
+int main()
+{
+Array a1(12);
+for ( size_t i = 0; i< a1.size();++i)
+{
+	a1i] = i; 
+}
+}
+```
+İşin içine sınıf nesneleri girince a[i] ile i[a] aynı anlamda değil. Bu pointerlar için böyle. 
+
+```
+int main()
+{
+	using namespace std;
+	string name{"necati"};
+	auto c1 = name[3];
+	auto c2 = 3[name];
+}
+
+```
+
+Geçerli değil. Sınıf nesneleri için bunu legal kılmanın doğrudan bir yolu yok. 
+
+* ptr dereferencing operatörü 
+ptr -> member selection arrow operatorü 
+
+Bu operatörlerin overload edilmesi için Pointer like veya smart pointer sınıflar olmalı. Smart pointer, dinamik ömürlü nesnelerin hayatlarını kontrol etmek için kullandığımız sınıf nesneler. 
+
+C’den gelen bir çağrışımı var. 
+
+*ptr 
+Eğer bir adresi içerik operatörünün operandı yaparsanız o adresteki nesneye erişirsiniz. 
+
+ptr ->func()
+Bir yapı pointerını ok operatörünün operandı yaparsanız aslında bu pointerın gösterdiği nesneye erişip onun veri elemanını kullanırsınız. 
+
+ptr ‘nin kendisi bir pointer değil ama pointermış gibi kullanılacak, içerik operatörünün operandı yaptığımda sözde gösterdiği nesneye eriştirecek bizi. Bunu yapmanın tek yolu içerik operatörünü overload etmek. 
+
+*ptr 
+Yani derleyici eğer ptr bir sınıf nesnesi ise yukarıdaki kodu aşağıdaki kod gibi ele alacak. 
+ptr.operator*()
+
+Dereferencing operatörü L value bir ifade oluşturur.  Fonksiyonun geri dönüş değeri türü L value referans
+
+Ok operatörü biraz problemli. 
+Kural biraz farklı. 
+
+```
+class Pointer {
+public: 
+	Pointer(int *ptr) : mp{ptr}   { } 
+	int& operator*()
+	{
+		Std::cout << “pointer::operator*\n”;
+		return *mp; 
+	}
+private: 
+	int* mp; 
+};
+
+int main()
+{
+	int x = 10; 
+	Pointer p{&x}; 
+	cout <<*p<<’\n’; 
+	cout << p.operator() << ‘\n’; 
+	++*p; 
+}
+```
+
+Kod legal. 
+Derleyici bu ifadeyi p’nin operator içerik fonksiyonuna yapılan çağrıya dönüştürdü.
+
+```
+cout <<*p<<’\n’; 
+cout << p.operator() << ‘\n’; 
+```
+
+*p ifadesi aslında p’nin gösterdiği nesne demek C’de. bu fonksiyon çağrılıyor bu fonksiyon referans semantiği ile sınıfın private veri elemanı olan mp’nin gösterdiği nesneyi döndürüyor. 
+
+Ama şimdi bakınız. Ok operatöründe durum farklı. Neden duru farklı ? çünkü ptr->func() ifadesinin geçerli olması için kural uydurmak gerekiyor. Neden ? bu durumda ptr öyle bir pointer olacak ki siz ptr->func(9 dediğinizde ptr’nin gösterdiği sınıf nesnesinin func isimli fonksiyonu çağrılacak. Bunu sağlayacak bir mekanizmaya ihtiyaç var. 
+
+Ok operatörü binary bir operator. 2 tane operandı var. 
+Normalde binary operator sınıfın üye fonksiyonu olması durumunda olsa olsa sağ operandı olan ifadenin bu fonksiyona argüman olarak gönderilmesi gerekir değil mi ? evet. Ama bu da faydalı bir senaryoya dönüşmez. O yüzden şöyle bir kural uydurmuşlar. 
+
+Ptr’nin bir sınıf nesnesi olduğunu düşünelim. Diyelim ki bu sınıfın ismi smart pointer. 
+
+
+SmartPointer ptr; 
+
+ptr->func(), 
+
+Derleyici böyle bir sınıf nesnesinin ok operatörünün operandı olduğunu gördüğünde sınıfın ok operatör fonksiyonu olup olmadığına bakıyor. Bu arada ok operatör fonksiyonu global operator fonksiyonu olarak overload edilemiyor. Üye operatör fonksiyonu olması şart. 
+
+Derleyici böyle bir ifadeyi şuna dönüştürüyor. 
+ptr->func(), 
+
+ptr.operator->()->func(); 
+
+Eğer ptr bir sınıf nesnesi ise ve ok operatörünün operandı olmuşsa her ne kadar burada ok operatörü burada overload edilmiş olsa da derleyici, ok operatör fonksiyonuna yapılan çağrıdan elde edilen geri dönüş değerini ifadedeki okun sol operandı yapıyor. Yani aslında biz ok operator fonksiyonuna çağrı yaparak ifade içindeki ok operatörünün sol operandı olan ifadeyi oluşturmuş oluyoruz. 
+
+Bu durumda böyle bir ifadenin legal olması için ok operator fonksiyonunun geri dönüş değeri türünün address olması gerekir. Ancak adres olacak ki ok operatörünün operandı olabilsin. 
+
+O yüzden sınıfların ok operatör fonksiyonları hemen her zaman pointer olan fonksiyonlardır. Böylece sınıf nesnesi ok operatör fonksiyonunun operandı olduğunda derleyici bunu şöyle bir ifadeye dönüştürür. 
+
+ptr.operator->()->func(); 
+
+Eğer sınıfın ok operator fonksiyonu üye fonksiyon ise - ki böyle olmak zorunda- bu durumda ok operatör fonksiyonunun kaç tane parametre değişkeninin olması lazım ? cevap 0 . argüman göndermeden çağrı yapıyorum. Parametre değişkeninin olmaması gerekiyor. 
+
+Arrow member selection operatörü normalde binary bir operator olmasına karşın unary operatormüş gibi overload ediliyor. 
+
+Üye fonksiyon olmak zorunda
+Parametre değişkeni olmayacak 
+
+Hoca burada standard kütüphaneden örnekler gösterdi. 
+
+Memory başlık dosyasındaki ismi unique_ptr olan sınıf türünden bir nesne oluşturucam. 
+
+```
+class Myclass{
+public:
+	void foo()
+	{
+		std:.cout<< "Myclass::foo()\n";
+	}
+};
+
+int main()
+{
+	using namespace std;
+	unique_ptr<Myclass> uptr(new Myclass);
+	uptr->foo();
+	uptr.operator->()->foo();
+}
+
+```
+Derleyici 23. Satırdaki ifadeyi 24. Satırdaki ifadeye dönüştürüyor. 
+
+Ok operatör fonksiyonunun geri dönüş değerinin pointer olması gerekiyor. 
+
+Sözde bir smart pointer sınıfı yazalım. 
+Amacımız dinamik ömürlü bir Cİnt nesnesinin ömrünü kontrol eden bir smart pointer sınıfı yazalım 
+
+Fonksiyon çağrı operatörünün overload edilmesi; 
+En önemli operator overloading’, 
+C++’ın generic programlama tarafına geçtiğimizde fonksiyon çağrı operatörünün overload edilmesinin ne kadar devleştiğini görücez. C++’ın en önemli araçlarından biri. 
+
+Fonksiyon çağrı operatörünü overload edilmesinin fayda sağlaması generic programlama ile birlikte kullanıldığında mümkün oluyor. 
+
+
+
+En ilginç en sık en önemli overloading örneği; 
+
+func(4) 
+C olsaydı bu şöyle olabilirdi.
+
+a) Func bir fonksiyonun ismi ve burada çağrılan fonksiyon ismi func olan fonksiyon
+
+b) Fonksiyonel makro da olabilirdi. Ön işlemci program burada bir replacement yapabilir
+
+c) Func’ın bir function pointer olması. Func bir fonksiyon değil fonksiyon adresi tutan bir değişken. Ve bu da aslında pointerın değişkenin değeri olan adresteki fonksişyon çağrıldı olabilir.
+
+C++ ‘da ise böyle bir ifade karşılığı bir fonksiyonun ç.ağrılmasını mümkün olan birden fazla seçenek var. 
+Fakat bu seçenkler içinde yukarıdaki seçenekler de söz konusu olabilir. Fakat C’de olmayan C++’da olan ayrı bir mekanizma var. 
+Func bir sınıf nesnesinin ismi olabilir, bir object bir instance olabilir. Bu durumda sınıf nesnesi fonksiyon çağrı operatörünün operandı olduğu için derleyici bunu sınıfın fonksiyon çağrı operatör fonksiyonuna çağrıya dönüştürebilir. Yani func’ı *this olacak kullanacak, operator fonksiyon çağrı fonksiyonuna çağrı yapacak. 
+
+func.operator() (4) 
+
+Ilk parantez fonksiyonun ismini oluşturan parantez. Fonksiyon çağrı operator fonksiyonu member operator function olmak zorunda. Global operator fonksiyonu olamaz. 
+Biz önce bu fonksiyonlara ilişkin sentaks kurallarını inceleyeceğiz. 
+
+Fonksiyon çağrı operator fonksiyonu; 
+
+```
+class Myclass{
+public:
+	void operator() ()
+{
+	std::cout <<”Myclass::operator() () this = “ << this << ‘\n’; 
+}
+}; 
+
+int main()
+{
+Myclass m; 
+std::cout <<&m<<’\n’; 
+m(); 
+m.operator()(); // böyle de çağrılabilir
+
+}
+```
+Kodun çıktısı; 
+
+```
+&m = 0095F81B
+Myclass::operator()() this = 0095F81B
+
+```
+
+Bu fonksiyonun parametresi olabilir, olmayabilir, birden fazla olabilir. Geri dönüş değeri istediğiniz şekilde seçilebilir.  Const olabilir, non cost olabilir. 
+
+
+```
+
+class Myclass{
+Public:
+	Int operator()(int x) const
+{
+	return x *3; 
+}; 
+
+int main()
+{
+	Myclass m; 
+std::cout<<m(45) << ‘\n’; 
+}
+```
+
+Overload da edilbilir. 
+
+```
+class Myclass {
+public:
+	void operator()(int) { std::cout << "int\n";}
+	void operator()(char) { std::cout << "char\n";}
+	void operator()(float) { std::cout << "float\n";}
+	void operator()(bool) { std::cout << "bool\n";}
+};
+
+int main()
+{
+	Myclass m;
+	m(1);
+	m('2');
+	m(3.f);
+	m(4>5);
+}
+```
+C++ terminolojisi; 
+f() 
+Eğer bir ifade bir isim fonksiyon çağrı operatörünün operandı olduğunda bir fonksiyonun çağrılması sonucunu doğuruyorsa bu ismin ilişkin olduğu varlığa callable denir.
+f bir sınıf nesnesi de olabilir. 
+
+Functor class (functor) 
+Function object class (function object) 
+
+Bir sınıf fonksiyon çağrı operatörünü overload ediyorsa functor ya da function object deniyor. Standard kütüphane de çokça geçiyor. 
+
+C++ dilinin en önemli arçalarından biri derleyiciye kod yazdıracak kodu yazdırabilmemiz. Derleyiciye kod yazdıran kodlara template deniyor. 
+
+Derleyiciye kod yazdıran kodlar şu kategorilerden birine ilişkin olabiliyor. 
+Function template
+Variable template
+Class template
+Alias template 
+concept 
+
+Derleyiciye kod yazdırma aracı modern C++’ın en önemli araçlarından biri. 
+```
+
+template <typename F>
+void func(F x) 
+{
+
+}
+```
+
+Derleyiciye fonksiyon kodu yazdıran kod. 
+Derleyicinin yazacağı fonksiyonun parametre değişkeninin türü compile time’da belli olacak. 
+Derleyiciye yazacağı fonksiyonda kullanacağı türün ne olduğunu söylemeye yönelik mekanizmaya template argument deniyor. 
+
+F nasıl bir tür olabilir ?
+Function pointer
+Değilse f bir sınıf türüyse bu durumda bu durumun legal olması için f’nin fonksiyon çağrı operatörünü overload etmiş bir sınıf türünden nesne olması gerekir değil mi ? evet. 
+Işte generic programlama tarafında en çok kullandığımız araç bu. 
