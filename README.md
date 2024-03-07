@@ -9,6 +9,7 @@ Constructorın içinde ana bloğunun içinde veri elemanları kullandığıız z
 
 Mümkün olduğunca elemanları initialize etme görevini üstlenmesi gerektiğini söyledik. 
 constructor sınıfın non static veri elemanlarını initialize eder. 
+
 Constructorın ana bloğunun için veri elemanları kullandığınız zaman onlar hayata gelmiş durumda. Myclass sınıfın constructorlarından biri, program akışı buraya geldiğinde tüm veri elemanları hayata gelmiş demektir. Ilk değer vermiyorsunuz atama yapıyorsunuz.
 
 ```
