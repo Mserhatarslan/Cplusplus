@@ -70,6 +70,7 @@ Sınıfların özel üye fonksiyonları :
 
 
 Durumları (Stateleri) ne olabilir ? 
+
 User declared -> fonksiyonun programcı tarafından bildirilmesi 
 İmplicitly declared -> programcı tarafından yapılan bir bildirim olmamasına rağmen derleyicinin dilin kurallarına dayanarak fonksiyonun bildirimini yapması
 Not declared -> fonksiyonun olmaması
