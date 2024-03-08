@@ -84,7 +84,7 @@ Taşıma semantiği ile de ilk defa karşılaşıcaz. R value referansın varlı
 En çok yanlış anlaşılan konulardan biri taşıma semantiği. Mülakatlarda da çıkar. 
 
 Copy Constructor:  (kopyalayan kurucu işlev) 
-SInıfın bir üye fonksiyonu ama özel bir üye fonksiyonu. Belirli şartlar sağlandığında derleyici bizim yerimize copy constructor kodunu yazacak. Copy constructor default edilebilen bir özel üye fonksiyonu çünkü special member function. 
+Sınıfın bir üye fonksiyonu ama özel bir üye fonksiyonu. Belirli şartlar sağlandığında derleyici bizim yerimize copy constructor kodunu yazacak. Copy constructor default edilebilen bir özel üye fonksiyonu çünkü special member function. 
 - Derleyici örtülü olarak bildirip kendisi default edebilir 
 - User declared olur ama ben derleyicinin kendisi yazmasını isteyebilirim
 
@@ -140,12 +140,17 @@ Nec x3{y};
 x1 , x2,x3 copy constructor ile hayata gelecek. 
 
 auto x1 = y;
+
 auto x2 (y);
+
 auto x3{y};
+
 Bu şekilde de yazılabilir. 
 
 cc —:> copy constructor 
+
 cctor —> copy constructor
+
 cc sadece bu senaryoda mı çağrılıyor ? bir nesnenin değerini bir başka nesneden alarak hayata geldiği senaryolardan biri de fonksiyon çağrıları. 
 
 ```
