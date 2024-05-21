@@ -12,7 +12,7 @@ constructor sınıfın non static veri elemanlarını initialize eder.
 
 Constructorın ana bloğunun için veri elemanları kullandığınız zaman onlar hayata gelmiş durumda. Myclass sınıfın constructorlarından biri, program akışı buraya geldiğinde tüm veri elemanları hayata gelmiş demektir. Ilk değer vermiyorsunuz atama yapıyorsunuz.
 
-```
+```c++
 class Myclass{
 
 public:
@@ -29,7 +29,7 @@ Elemanların ilk değer alma sırasını belirleyen kriter, sınıf içindeki bi
 
 Önemli sentaks öğelerinden biri daha default member initializer, eğer veri elemanları derleme zamanında hangi değerle hayata gelecekleri belliyse in class initializer sentaksını kullanıyoruz. Bu ilk değer verme değil, eğer derleyicinin yazdığı default constructor ya da bizim yazdığımmız constructucor herhangi bir şekilde bu veri elemanını initialize etmezse default olarak bu değerle initialization kodunun eklenmesini istiyoruz. 
 
-```
+```c++
 class Myclass{
 
 public:
@@ -39,7 +39,7 @@ private:
 
 ```
 
-```
+```c++
 class Myclass{
 
 public:
@@ -109,7 +109,7 @@ Copy constructor hangisi için çağrılacak ? x
 Copy constructor’un x’i hayata getirirken onu y’nin değeriyle hayata getirmesi için y’ye de erişmesi lazım değil. İşte bu yüzden copy constructor’un bir parametresi olması gerekiyor. Y’yi alabilecek bir parametresi olması gerekiyor. 
 Burada y değişecek mi ? y’yi değiştirmeye yönelik bir işlem yok. Y’yi salt okuma amaçlı erişicem. Yani const L value reference parametre idealdir yani. 
 
-```
+```c++
 class Nec {
 public:
 	Nec(const Nec& other)
@@ -125,7 +125,7 @@ Bu fonksiyonun içinde this kimin adresi olacak ? x’in
 
 copy constructorun çağrılacağı diğer senaryolar, copy initialization yapabildiğimiz gibi direkt initialization sentkasını da kullanabiliriz 
 
-```
+```c++
 class Nec {
 public:
 	Nec(const Nec& other);
@@ -153,7 +153,7 @@ cctor —> copy constructor
 
 cc sadece bu senaryoda mı çağrılıyor ? bir nesnenin değerini bir başka nesneden alarak hayata geldiği senaryolardan biri de fonksiyon çağrıları. 
 
-```
+```c++
 class Nec {
  //..
 }
@@ -175,7 +175,7 @@ Bir fonksiyonun parametresinin sınıf türünden olması ve o fonksiyonun bir s
 Bir klasik durum daha var. 
 Diyelim ki bu seferde tam tersi fonksiyonun geri dönüş değeri bir sınıf türünden. Siz bu fonksiyonun return statement’inde return ifadesi olarak bir sınıf nesnesi kullanıyorsunuz. Eğer bu durumda derleyici ileride göreceğimiz önemli bir optimizasyonu yapacak durumda değilse bu fonksiyonun geri dönüş değerininin çağrılan koda aktarılması için cc çağrılacak. 
 
-```
+```c++
 class Nec {
  //..
 }
@@ -194,7 +194,7 @@ cc special member function olduğu için kodu derleyici tarafından yazılabilir
 
 Bir sınıfın kodunu yazalım. 
 
-```
+```c++
 
 class Nec {
 public: 
@@ -220,7 +220,7 @@ Aynı adres.
 
 Ama şimdi bakın. 
 
-```
+```c++
 class Nec {
 public: 
 	Nec()
@@ -254,7 +254,7 @@ Sınıfın special member functionları bazı şartlar sağlandığında derleyi
 
 cc’u kendim tanımlasaydım bizim tanımladığımız çağrılacaktı. 
 
-```
+```c++
 #include <iostream>
 
 
@@ -295,7 +295,7 @@ Derleyici belirli koşullar sağlandığında sınıfın özel üye fonksiyonlar
 Eğer bir fonksiyonun kodunu derleyici default ederse derleyici nasıl bir kod yazıyor ? 
 
 Bu soruyu her bir özel üye fonksiyonu için sorduğumda ve cevapladığımda şu yapıyı kullanıcaz. 
-```
+```c++
 class Myclass {
 public:
 	Myclass()
@@ -315,12 +315,12 @@ Derleyicinin yazdığı dc, sınıfın veri elemanlarını default initializer e
 
 Eğer derleyici bir sınıfın bir özel üye fonksiyonunu örtülü olarak bildirip tanımlama girişiminde bulunduğunda eğer dilin kurallarını çiğneyen bir durum oluşursa derleyici default edeceği özel üye fonksiyonu delete edilmiş olarak bildirir.
 
-```
+```c++
 Myclass = delete();
 ```
 Ya elemanlar default initialize edilemiyorsa ? elemanlardan biri const ise ? sentaks hatası oluşacak. Derleyici delete edilmiş olarak bildirilecek. 
 
-```
+```c++
 class Myclass {
 	const int x ;
 };
@@ -330,7 +330,7 @@ Bu kodda bir sentaks hatası var mı ? Hayır
 Bu sınıfın default constructorı deleted edilmiş durumda. Derleyici implicit declared durumda, x’i default initialize ediyor ama const nesneler default initialize edilemediği için sentaks hatası oluşacak. 
 
 Ne zaman sentaks hatası alırım ? delete edilmiş fonksiyon çağrıldığında. 
-```
+```c++
 class Myclass {
 	const int x ;
 };
@@ -345,7 +345,7 @@ Attempting to reference a deleted function
 class Myclass {
 	int &r;
 };
-```
+```c++
 int main()
 {
 Myclass m;
@@ -358,7 +358,7 @@ Sentaks hatası olmasının sebebi Caner’in default constructorunun private ol
 
 Eğer siz sınıfa herhangi bir constructor bildirirseniz derleyici default constructorı bildirmez. Bu bir kural. Tasarımsal bir kural. 
 
-```
+```c++
 class A{
 public:
 	A(int);
@@ -368,7 +368,7 @@ public:
 A sınıfın default constructoru hakkında ne söylersiniz ?
 Cevap yok . neden çünkü ben bir copy constructor yazdım. 
 
-```
+```c++
 class A{
 public:
 	A(const A&);
@@ -394,7 +394,7 @@ Eğer bir derleyici bir sınıfın bir özel üye fonksiyonunu örtülü olarak 
 Acaba derleyici sınıf için nasıl bir copy constructor yazıyor ? derleyicinin yazdığı copy constructor sınıfın non static, public, inline fonksiyonu. 
 
 
-```
+```c++
 class Myclass {
 public:
 	Myclass(){}
@@ -424,7 +424,7 @@ y’yi değiştirirsek x değişmez.
 
 std::string bir value type mi ? evet
 
-```
+```c++
 std::string s1{"guven unel"};
 std::string s2 = s1;
 s1 = "remzi kaya";
@@ -437,7 +437,7 @@ Konudan bağımsız not;
 Bir sınıfın elemanı kedi türünden olamaz. Kendi türünden pointer ve referans olabilir. 
 ```
 
-```
+```c++
 class Date{
 
 public:
@@ -459,7 +459,7 @@ dy için sınıfın hangi fonksiyonu çağrılacak ? copy constructor.
 Sınıfın copy constructrunu derleyici yazıyor. Bana bir zararı var mı ? hayır. 
 dy nesnesi dx nesnesi ile aynı değeri sahip. 
 
-```
+```c++
 class Date{
 
 public:
@@ -482,7 +482,7 @@ int main()
 Aynı değerleri yazdıracak. 
 Kendimiz copy  constructoru yazsaydık şöyle yazardık. Run time da trace edebilmek için yazarız. 
 
-```
+```c++
 class Date{
 
 public:
@@ -536,7 +536,7 @@ Gerçekte olması gereken pointerların kopyalanması değil, pointerların gös
 İşte bu durumda copy constructoru kendimiz yazmalıyız. Aksi halde başımız cidde dertte. 
 Ama bu durumların üretimde karşılaşılması çok seyrek. 
 
-```
+```c++
 class Person{
 private:
 	std::string name;
@@ -582,7 +582,7 @@ Böylece copy constructorun varlık nedenini bu örnekte daha iyi gördük. Art�
 
 Bir sınıf nesnesinin değerini bir başka sınıf nesnesinden alarak hayata gelmesi başka, hayatta olan bir sınıf nesnesine bir başka sınıf nesnesinin atanması başka. 
 
-```
+```c++
 class Nec
 {
 };
@@ -610,7 +610,7 @@ Special member function mu ? evet
 Special member function olması bu fonksiyonun kodunun derleyici tarafından yazılabileceği anlamına geliyor mu ? evet
 Bu fonksiyonun içinde this pointerını kullansam kimin adresini kullanmış olurum ? x
 
-```
+```c++
 
 using namespace std;
 int main()
@@ -625,7 +625,7 @@ int main()
 Burada şimdi copy assignment mı çağrılacak ? kesinlikle. 
 Yani bu kodu böyle yazmakla şöyle yazmak arasında hiçbir fark yok. 
 
-```
+```c++
 using namespace std;
 int main()
 {
@@ -656,7 +656,7 @@ Bunlar derleyici tarafından yazılırsa kodlarının nasıl yazıldığı konus
 Ve önemli bir kuralda şu, derleyici bu fonksiyonları örtülü bildirildiği (implicit declared) için default etme sürecinde bir sentaks hatası oluşan durumla karşılaşırsa tanımlayacağı fonksiyonu dilin kurallarına göre delete ediyor. 
 
 Hep şöyle bir pattern kullandık. 
-```
+```c++
 class Myclass {
 private:
 	T tx;
@@ -682,7 +682,7 @@ Ne zaman kullanılmalı?
 
 Bir nesne bir daha kullanılmayacaksa o zaman taşıma işlemi yapılmalıdır.
 ```
-```
+```c++
 class Myclass {
 public:
   Myclass(const Myclass& other) : tx(other.tx), ux(other.ux) { }
@@ -717,7 +717,7 @@ En çok yanlış öğrenilen konularından biri taşıma semantiği,
 
 Bir fonksiyonun parametresinin sağ taraf referans olması doğrudan bir taşıma olduğu anlamına gelmiyor. 
 
-```
+```c++
 #include <iostream>
 
 class Nec {
@@ -738,7 +738,7 @@ Nec nesnesini taşımız olmuyoruz, taşıma semantiği ile.
 
 Taşıma semantiği ile taşımak için aşağıdaki gibi olması lazım. 
 
-```
+```c++
 #include <iostream>
 
 class Nec {
@@ -758,7 +758,7 @@ int main()
 ```
 Sağ taraf değerine cast edilip bu ifade ile bir nesneye atama ya da kopyalama yapmamız gerekiyor. 
 
-```
+```c++
 #include <iostream>
 
 class Nec {
@@ -782,7 +782,7 @@ int main()
 Diyelim ki taşıma ile kopyalama arasında ciddi bir maliyet farkı olan sınıf olsun. Mesela standard kütüphanenin string sınıfı böyle. String sınıfı türünden bir nesne özel bir optimizasyon yapılmıyorsa tuttuğu yazıyı allocate edilmiş bir bellek alanında heap’de tutuyor.
 String nesnelerinin kopyalanması ile taşınması arasında bir maliyet farkı var mı ? şüphesiz. 
 
-```
+```c++
 int main()
 {
   using namespace std;
@@ -798,7 +798,7 @@ Genel olarak şöyle bir yapı oluşturuluyor.
 L value ile R value arasındaki fark ne ? 
 L value expression persistent bir nesne demek. O ifadeden sonra o sınıf nesnesinin halen kullanılma ihtimali var demek. 
 
-```
+```c++
 int main()
 {
   // expr ==> std::string nesnesi
@@ -810,7 +810,7 @@ int main()
 Eğer string nesnesi anlamına gelen ifade R value expression ise bu ifadenin yürütülmesinden sonra bu nesneyi kullanacak bir kod yok demek. 
 Ama ifade L value ise ifade persistent demektir. 
 
-```
+```c++
 // std::string str{expr};
 ```
 Derleyici bu ifadenin value kategorisinin L value olduğunu anlarsa str için function overload resolution ile copy constructorı çağıracak. Ama derleyici bu ifadenin compile time’da R value olduğunu anlarsa str için move constructor’ı çağıracak. 
@@ -818,7 +818,7 @@ Derleyici bu ifadenin value kategorisinin L value olduğunu anlarsa str için fu
 
 Diyelim ki siz bir fonksiyon yazmak istiyorsunuz ve fonksiyonun parametresini referans yapmak istiyorsunuz. 
 
-```
+```c++
 void func(const std::string& other)
 {
   std::string sval = other; 
@@ -832,7 +832,7 @@ Bu durumda sval için copy constructor mı çağrılacak yoksa move constructor 
 Copy constructor çağrılacak. 
 Ben bu fonksiyonu R value olan bir string nesnesi ile çağırsam R value olmasına rağmen kaynağı çalar mı ? Hayır. 
 
-```
+```c++
 void func(const std::string& other)
 {
   std::string sval = other; 
@@ -845,7 +845,7 @@ int main()
 
 Peki şimdi benim ne yapmam gerekiyor ?  function overloading’den faydalanıyoruz. 
 
-```
+```c++
 void func(const std::string& other)
 {
   //
@@ -865,7 +865,7 @@ Ben func fonksiyonuna bir string nesnesi anlamına gelen bir ifade ile çağrı 
 
 Vector sınıfı dinamik dizi sınıfı. Vector sınıfının push_back isimli bir fonksiyonu var(sondan ekleme yapmak için) Fakat push_back’in 2 tane overload’u var. 
 
-```
+```c++
 // vector
 int main()
 {
@@ -880,7 +880,7 @@ move overload. Peki neden böyle yapmışlar? Elimde bir vector nesnesi varsa on
 Birkaç tane daha kritik nokta var. 
 Taşıma semantiği her zaman ciddi bir kar sağlar mı maliyet açısından ? şüphesiz hayır. 
 
-```
+```c++
 class Myclass{
 
 private:
@@ -899,7 +899,7 @@ Oysa move constructor olsaydı diğer nesnenin vectorunu, listini, stringini ça
 Maliyet açısından çok çok büyük bir fark var. 
 
 
-```
+```c++
 class Myclass{
 private:
   int ar[400];
@@ -909,7 +909,7 @@ private:
 
 Böyle bir sınıf için move constructor ile copy constructor arasında bir maliyet farkı olmaz ? hayır olmaz.
 
-```
+```c++
 int main()
 {
 
@@ -920,7 +920,7 @@ int main()
 Str ifadesi L value. 
 Peki str için için copy constructor mu çağrılacak yoksa move constructor mı ? copy constructor. Diyelim ki ben bilerek isteyerek str’nin kaynağını çalmak istiyorum. O zaman kaynağını çalabilmem için copy constructor yerine move constructor’ın çağrılması gerekir. Ama move constructorın çağrılması için de argümanın R value expression olması gerekir. 
 
-```
+```c++
 int main()
 {
 
@@ -939,14 +939,14 @@ Geçerli durum şu demek,  nesnenin invaryantları tutuyor.
 Special member functionlar bazı koşullar sağlandığında derleyici tarafından default edilebilen fonksiyonlar. Hangi durumda derleyici sınıfın special member function’unu implicitly declared eder ?
 Ders sonunda verilecek tabloda bu sorunun cevabı bulunacak. 
 
-```
+```c++
 class Myclass {
 
 };
 ```
 Bu sınıfın herhangi bir special member functionu bildirilmiş durumda mı ? Hayır. Eğer sınıfın hiçbir special member function’u bildirilmemişse derleyici tüm special member functionları implicitly declared eder. 
 
-```
+```c++
 class Nec {
 
 };
@@ -964,7 +964,7 @@ public:
 Yukarıdaki 2 sınıf arasında hiçbir fark yok. Derleyici bütün üye fonksiyonları default edecek. 
 
 
-```
+```c++
 class Nec {
     Nec(int);
 };
@@ -981,7 +981,7 @@ public:
 Derleyici default ctor’u tanımlamadı. Default ctor’u yok. İki kod arasında bir fark yok. 
 
 
-```
+```c++
 class Nec {
     ~Nec();
 };
@@ -999,7 +999,7 @@ Siz sınıfa destructor bildirdiğiniz  zaman move memberlar not declared . Sın
 
 Eğer siz sınıfa copy constructor bildirirseniz ; 
 
-```
+```c++
 class Nec {
      Nec(const Nec&);
 };
@@ -1015,7 +1015,7 @@ public:
 ```
 Eğer siz sınıfa copy assignment bildirirseniz ; 
 
-```
+```c++
 class Nec {
      Nec& operator = (const Nec&);
 };
@@ -1071,7 +1071,7 @@ mesela std::ostream sınıf
 
 mesela std::thread sınıfı
 
-```
+```c++
 int main()
 {
   using namespace std;
@@ -1083,7 +1083,7 @@ int main()
 Taşımaya açık, kopyalamaya kapalı. 
 Kendi sınıfımı taşımaya açmak istersem ne yapmam gerekiyor ? 
 
-```
+```c++
 class Nec{
 public:
     Nec(const Nec&) = delete;
@@ -1095,7 +1095,7 @@ public:
 ```
 Move only type
 
-```
+```c++
 class Nec{
 public:
     Nec(Nec&&);
@@ -1108,7 +1108,7 @@ public:
 - Non copyable but movable ( move only type)
 - Non copyable & non movable
 
-```
+```c++
 int main()
 {
   using namespace std;
@@ -1121,7 +1121,7 @@ String sınıfı hem copyable hem movable
 
 Bir sınıfı kopyalamaya ve taşımaya kapatmak için copy constructur’ı copy assignment’ı delete etmeniz yeterli. 
 
-```
+```c++
 struct Myclass{
     Myclass(const Myclass&) = delete;
     Myclass& operator= (const Myclass&) = delete;
@@ -1130,7 +1130,7 @@ struct Myclass{
 ```
 Bu sınıf hem kopyalamaya hem de taşımaya karşı kapalı. 
 
-```
+```c++
 class Myclass{
 };
 
@@ -1160,7 +1160,7 @@ Myclass{12}
 Mint(13); //Mint türünden geçici nesne
 ```
 
-```
+```c++
 class Myclass {
 public:
     Myclass() { std::cout << "default ctor\n"; }
@@ -1229,7 +1229,7 @@ Fonksiyonun geri dönüş değerinin sınıf türünden olması ve geri dönüş
 2. Senaryo için kullanılan terim , Return value optimization (RVO) ; 
 Yani derleyicinin kopyalamayı engelleyecek şekilde doğrudan nesneyi fonksiyonun geri dönüş değerinin yazılacağı bellek alanında oluşturması 
 
-```
+```c++
 // RVO
 Myclass foo()
 {
@@ -1245,7 +1245,7 @@ Copy elision olması garanti altında. Delete edilmiş olsa dahi garanti altınd
 Named return value optimization (NRVO) ; 
 Bu hala bir optimizasyon. Debug modda bu optimizasyon derleyici tarafından disable edilebilir. 
 
-```
+```c++
 std::string get_str()
 {
 std::string str;
@@ -1303,7 +1303,7 @@ Conversion constructor (dönüştüren kurucu işlev)
 
 Bir sınıfın parametreli bir constructorı temel varlık nedeninin yanı sıra örtülü dönüşümde de kullanılıyor. Bu yüzden böyle contructorlara conversion constructor deniyor. 
 
-```
+```c++
 class Myclass{
 };
 
@@ -1321,7 +1321,7 @@ Sentaks hatası. Çünkü atama operatörünün sağ operandı int türden ama a
 There is no acceptable conversion
 ```
 
-```
+```c++
 class Myclass{
 public:
   Myclass();
@@ -1339,7 +1339,7 @@ Legal.
 
 Derleyici atama operatörünün sağ operandının int türden olduğunu görünce bu atamanın yapılabilmesi için int’i örtülü olarak Myclass sınıfı türünden bir nesneye dönüştürdü. Yani aslında derleyicin yaptığı dönüşüm şöyle bir koda karşılık geliyor ; (Sembolik olarak) 
 
-```
+```c++
 class Myclass{
 public: 
     Myclass() { };
@@ -1357,7 +1357,7 @@ int main()
 ```
 Böyle olduğunu kanıtlayalım. int parametreli constructor'da bu fonksiyonun çağrıldığını gösteren bir yazı yazdırsam basit bir şekilde kanıtlyabiliriz. 
 
-```
+```c++
 class Myclass{
 public: 
     Myclass() { };
@@ -1383,7 +1383,7 @@ Buradaki constructor kendi görevinin yanı sıra int türden bir ifadeyi Myclas
 
 Aşağıdaki kodda getchar çağrısından önce destructor çağrılacak mı ? 
 
-```
+```c++
 class Myclass{
 public: 
     Myclass() { };
@@ -1411,7 +1411,7 @@ int main()
 Kesinlikle çağrılacak. 
 
 
-```
+```c++
 class Myclass{
 public: 
     Myclass()
@@ -1472,7 +1472,7 @@ m= ival satırındaki atamada derleyici int türden Myclass sınıfı türüne d
 
 Eğer sınıfın böyle bir constructoru varsa artık int türden Myclass sınıfı türüne dönüşüm bekleyen her yerde derleyici durumdan vazife çıkararak bu constructorı çağırarak dönüşümü gerçekleştirecek. 
 
-```
+```c++
 class Myclass {
 
 public:
@@ -1494,7 +1494,7 @@ int main()
 Yanlışlıkla, bilerke isteyerek değil m değişkenini argüman olarak göndermek yerine mi değişkenini argüman olarak gönderdiğinizde sentaks hatası olmasını beklerken bu sentaks hatası olmayacak. 
 Çünkü dilin kuralları gereği int parametreli constructora çağrı yaparak bir geçici nesne oluşturacak. 
 
-```
+```c++
 class Myclass {
 
 public:
@@ -1524,7 +1524,7 @@ bilerek ya da bilmeyerek yanlışlıkla i değişkenini return ifadesi yapsam se
 
 Conversion constructor dikkatli kullanılmalıdır. 
 
-```
+```c++
 class Myclass {
 
 public:
@@ -1723,7 +1723,7 @@ Dolaysıyla bunları binary veya unary olarak overload ettiğimizde farklı oper
 !x   operator!(x) 
 
 Member operator function olarak overload edildiğinde derleyici operatörün operandı olan ifadeyi *this nesnesi olarak alacak.  Yani o nesnesin operator fonksiyonunu çağıracak. Fonksiyonun parametre değişkeni olmamalı. 
-```
+```c++
 class Nec {
 public: 
 	bool operator!();
@@ -1738,7 +1738,7 @@ x + y                       x.operator+(y) —-> member operator function
 x + y 		        operator+(x,y) —> global operator function
 
 Biri hariç hiçbir operator fonksiyonu varsayılan argüman alamaz. Varsayılan argüman mekanizması kapatılmış. Hangisi hariç ? fonksiyon çağrı operatörü. 
-```
+```c++
 class Nec {
 Public: 	
 	Nec operator+(int x = 5) ;
@@ -1746,7 +1746,7 @@ Public:
 ```
 Sentaks hatası. 
 
-```
+```c++
 class Nec {
 Public: 	
 	Nec operator()(int x = 5)const ;
@@ -1760,7 +1760,7 @@ Operator overloading mekanizmasında operatörlerin önceliğini ve öncelelik y
 priority / precedence
 Associativity ( left or right) 
 
-```
+```c++
 class Nec {
 public: 
 };
@@ -1790,7 +1790,7 @@ Bu şekilde de yazılabilir. İsimleriyle çağırdık.
 
 Şimdi üye operator fonksiyonu olarak ele alalım. 
 
-```
+```c++
 class Nec {
 public: 
 	Nec operator+(const Nec&); 
@@ -1844,13 +1844,13 @@ Diyelim ki Nec sınıfı türünden bir nesne ile Erg sınıfı türünden bir n
 Global operator fonksiyonu öyle yerler var ki, olmak zorunda. Bazı yerlerde iş programcının tercihine kalabilir. Üye operatör fonksiyonu mu olsun global operatör fonksiyonu mu. Ama bazı yerlerde  global operatör fonksiyonu olmak zorunda. 
 
 Başka bir örnek, int türden bir değişkenin değerini formatlı olarak standard output’a yazdırmak istersem operator overloading’den faydalanıyorum. 
-```
+```c++
 int x = 5; 
 cout << x; 
 cout.operator<<(x); 
 ```
 Çok basit bir sınıf yazalım. 
-```
+```c++
 
 class Counter{
 public: 
@@ -1868,7 +1868,7 @@ Int main()
 
 (1) : şimdi üye operatör fonksiyonu olsaydı bu hangi sınıfın üye operatör fonksiyonu olmalıydı ? cout hangi sınıf türündense onun, o sınıfın ismi ostream. Ama ostream sınıfı bana ait değil. Standard kütüphanenin kodu. Standard kütüphanede yapılan değişiklikler tanımsız davranış niteliğinde. Ama global operator fonksiyonuna yazabilirim. 
 
-```
+```c++
 class Counter{
 public: 
 	Counter(int x = 0) : mx{0}  {}
@@ -1894,7 +1894,7 @@ Global operator fonksiyonu gerekiyor bazı durumlar için.
 
 Fonksiyonların geri dönüş değerlerinin türünün ne olması gerektiğini belirleyen semantik yapıdır. O sınıf neyi temsil ediyor ? 
 
-```
+```c++
 class Date{
 	operator+(int days)const; 
 operator-(const Date&)const; 
@@ -1945,7 +1945,7 @@ Eğer bu üye operator fonksiyonu ise;
 x.operator+(y) 
 X’in değişmeyeceğini gösteren nedir ? 
 
-```
+```c++
 class Nec{
 public: 
 	operator+(const Nec&)const;            
@@ -1957,7 +1957,7 @@ Const correctness açısından böyle.
 x+= y; 
 Bu işlemden y değişmeyecek, x değişecek
 
-```
+```c++
 class Nec{
 public: 
 	operator+(const Nec&);            
@@ -1981,7 +1981,7 @@ m1 + m2;
 
 Referans semantiğini zorunlu kılan operator overloading mekanizması. 
 
-```
+```c++
 class Myclass{
 Public: 
 	Myclass& operator=(const Myclass&);
@@ -2043,7 +2043,7 @@ Strong type adında bir kavram var. Belirli yerlerde primitive türlerini kullan
 
 Her abstraction zero cost değil. Özellikle nesne yönelim programlama tarafındaki soyutlamalar maliyetli soyutlamalar. 
 
-```
+```c++
 class Myclass{
 //….
 public: 
@@ -2080,7 +2080,7 @@ include koruması, multiple inclusion guard ile header dosyasının oluşturulma
 #pragma once → standard değil. 
 
 cint.h file; 
-```
+```c++
 #if !defined CINT_H
 #define CINT_H
 
@@ -2103,7 +2103,7 @@ private:
 
 main.cpp file;
 
-```
+```c++
 #include “cint.h”
 
 Int main()
@@ -2135,7 +2135,7 @@ Generic programming, object oriented programming, functional programming.
 std::cout nesnesinin türü ostream
 Std::cin nesnesinin türü istream
 
-```
+```c++
 void foo(std::ostream); 
 int main()
 {
@@ -2176,7 +2176,7 @@ Yukarıdaki cout ile aşağıdaki cout arasında hiçbir fark yok. Hem function 
 
 cint.h file;
 
-```
+```c++
 
 #if !defined CINT_H
 #define CINT_H
@@ -2216,7 +2216,7 @@ private:
 
 main.cpp file;
 
-```
+```c++
 #include “cint.h”
 
 Int main()
@@ -2259,7 +2259,7 @@ Ben birden fazla tür için söz konusu olabilecek bir operasyonu bşrş fonksiy
 Derleyiciye kod yazdıran kod —-> meta code 
 Template dediğimiz araç seti ile yapılıyor. 
 
-```
+```c++
 template <typename T>
 void func(T x)
 {
@@ -2286,7 +2286,7 @@ Operator overloading konusuna giriş yapmıştık. Tipik olarak aritmetik operat
 ADL dediğimiz kuralla bir ilişkisi var. Bazı avantajlar sağlıyor. 
 Formatlı giriş çıkış işlemleri için bitsel sola kaydırma ve sağa kaydırma operatörlerinin overload edillmesini gördük. 
 
-```
+```c++
 class Cint {
 
 public:
@@ -2317,7 +2317,7 @@ Friend olmasının önemli sonucu sınıfın private bölümüne erişme hakkı 
 
 Burada kullanılan ilginç bir teknik var; 
 
-```
+```c++
 Cint& operator +=(const Cint& r) 
 {
 	mval += r.mval;
@@ -2327,7 +2327,7 @@ Cint& operator +=(const Cint& r)
 (atama operatörü ile oluşturulan ifadeler L value expression’dur) .
 Toplama operatörünü şöyle de overload edebilirdik. 
 
-```
+```c++
 friend Cint& operator +=(const Cint& c1, const Cint& c2) 
 {
 	Cint temp{c1};
@@ -2341,7 +2341,7 @@ Temp += c2;
 Olası avantajlarından biri sınıfın private bölümüne erişme mecburiyeti artık yok. 
 Bunu biraz daha kompakt halde yazabiliriz. Daha şık. 
 
-```
+```c++
 friend Cint& operator +=(const Cint& c1, const Cint& c2) 
 {
 	return Cint{c1} += c2; 
@@ -2474,7 +2474,7 @@ Index operatörü
 a[b]  , *(a+b) ifadesi ile aynı
 b[a]  , *(b+a) ifadesi ile aynı. 
 
-```
+```c++
 int main()
 {
 
@@ -2520,7 +2520,7 @@ Sanki bir dizinin 4 indisli elemanına 5 değerini atamışız gibi bir görünt
 
 Standart kütüphaneden birkaç örnek verelim. Mesela string sınıfı. 
 
-```
+```c++
 int main()
 {
 	using namespace std; 
@@ -2539,7 +2539,7 @@ Yazının karakterine eriştiriyor.
 
 Köşeli parantez operatörü ile ilgili önemli bir detay var. Aynı durum diğer sınıflar için de geçerli. 
 
-```
+```c++
 #include <isotream>
 #include <vector>
 #include <string>
@@ -2556,7 +2556,7 @@ int main()
 Const overloading. 
 Sınıf nesnemizin kendisi const ise köşeli parantez operatörü ile eriştiğimiz nesnenin const olması gerekir. 
 
-```
+```c++
 #include <isotream>
 #include <vector>
 #include <string>
@@ -2580,7 +2580,7 @@ int main()
 Const olmayan üye fonksiyonu çağrılacak ve değiştirebilicem. 
 Nesnem const olsaydı function overload resolution kurallarına göre const ile tanımlanan fonksiyon çağrılacaktı ve sentaks hatası olacaktı. Anlamadım 😀
 
-```
+```c++
 #include <isotream>
 #include <vector>
 #include <string>
@@ -2613,7 +2613,7 @@ std::array<int,5> ar;   // array sınıfını kullanmanın bir sürü avantajı 
 
 Biz biraz daha primitive düzeyde kod yazalım.
 
-```
+```c++
 class Array{
 public: 
 	explicit Array(std::size_t n) : msize{}, mp{new int[n]}
@@ -2654,7 +2654,7 @@ for ( size_t i = 0; i< a1.size();++i)
 ```
 İşin içine sınıf nesneleri girince a[i] ile i[a] aynı anlamda değil. Bu pointerlar için böyle. 
 
-```
+```c++
 int main()
 {
 	using namespace std;
@@ -2691,7 +2691,7 @@ Dereferencing operatörü L value bir ifade oluşturur.  Fonksiyonun geri dönü
 Ok operatörü biraz problemli. 
 Kural biraz farklı. 
 
-```
+```c++
 class Pointer {
 public: 
 	Pointer(int *ptr) : mp{ptr}   { } 
@@ -2717,7 +2717,7 @@ int main()
 Kod legal. 
 Derleyici bu ifadeyi p’nin operator içerik fonksiyonuna yapılan çağrıya dönüştürdü.
 
-```
+```c++
 cout <<*p<<’\n’; 
 cout << p.operator() << ‘\n’; 
 ```
@@ -2762,7 +2762,7 @@ Hoca burada standard kütüphaneden örnekler gösterdi.
 
 Memory başlık dosyasındaki ismi unique_ptr olan sınıf türünden bir nesne oluşturucam. 
 
-```
+```c++
 class Myclass{
 public:
 	void foo()
@@ -2817,7 +2817,7 @@ Biz önce bu fonksiyonlara ilişkin sentaks kurallarını inceleyeceğiz.
 
 Fonksiyon çağrı operator fonksiyonu; 
 
-```
+```c++
 class Myclass{
 public:
 	void operator() ()
@@ -2846,7 +2846,7 @@ Myclass::operator()() this = 0095F81B
 Bu fonksiyonun parametresi olabilir, olmayabilir, birden fazla olabilir. Geri dönüş değeri istediğiniz şekilde seçilebilir.  Const olabilir, non cost olabilir. 
 
 
-```
+```c++
 
 class Myclass{
 Public:
@@ -2864,7 +2864,7 @@ std::cout<<m(45) << ‘\n’;
 
 Overload da edilbilir. 
 
-```
+```c++
 class Myclass {
 public:
 	void operator()(int) { std::cout << "int\n";}
@@ -2902,7 +2902,7 @@ Alias template
 concept 
 
 Derleyiciye kod yazdırma aracı modern C++’ın en önemli araçlarından biri. 
-```
+```c++
 
 template <typename F>
 void func(F x) 
