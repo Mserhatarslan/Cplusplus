@@ -1,5 +1,94 @@
 # C++-Kursu-Notları-
 
+# 14 Ocak 2. C++ Dersinden Notlar; 
+
+C++ içindeki C ile bağımsız C arasındaki sentaks düzeyindeki farklılıklarını incelemeye başladık. 
+Old style function definition sentaksı C dilinde hala geçerli, derleyicilerin geriye dönük uyumluluk sağlaması sebebiyle (backward compatibility). Eski kodlarda karşımıza çıkabilir. 
+C++ dilinde hiçbir zaman geçerli olmadı. 
+
+İmplicit int C++ dilinde geçerli değil. C’de de kaldırıldı ama backward compatibility adına derleyiciler hala destek veriyor. 
+
+Derleyici bir ismi arayıp name lookup yapıp o ismi bulamazsa sentaks hatası. 
+
+```c++
+
+int main(void)
+{ 	
+	foo(3,5);
+}
+```
+C dilinde derleyici uyarı verir. 
+Compiler Diagnostic: foo undefined, assuming extern returning int
+
+
+Dolayısıyla sentaks hatası oluşturmuyor. Fakat C++ dilinde bu kural hiçbir zaman geçerli olmadı. 
+Eğer derleyici tarafından aranıp bulunamıyorsa doğrudan sentaks hatası. 
+Derleyici burada name lookup hatası verecek. 
+
+Name lookup (isim arama): 
+Derleyici bir ismi arayıp bulamazsa normalde sentaks hatası olması gerekir. Fakat o ismin fonksiyon çağrı operatörünün operandı olduğunu gördüğünde bureadkai ismin bir başka modülde bildirimiş (external tanımlanmış) bir fonksiyon ismi olduğunu varsayıyor. Buna default function decleration deniyor. Bu istediğimiz bir özellik değil. C'nin eski zamanlarında kalmış bir özellik. 
+Derleyici bu kod için C dilinde sadece bir uyarı verir. 
+Compiler Diagnostic: foo undefined, assuming extern returning int
+Bu şu demek aslında C’de. C dili diyor ki, eğer böyle bir bildirim yoksa default function declaration aslında şu demek. Derleyici sanki böyle bir fonksiyonun bildiriminin varlığına güveniyor. 
+
+C++ dilinde bu kural hiçbir zaman geçerli olmadı. C++ dilinde bir isim neyin ismi olursa olsun derleyici tarafından aranıp bulunamıyorsa doğrudan sentaks hatası. Fonksiyon çağrı operatörünün operandı olması bu durumu değiştirmiyor. 
+C++ derleyicisi burada name lookup hatası verecek. 
+
+```C++
+void foo();
+```
+Bu function prototype. 
+Bu bildirimde foo fonksiyonun kaç tane parametre değişkeni olduğu söyleniyor ? 
+C dilinde bir fonksiyonun bildiriminde veya tanımında parametre parantezinin boş bırakılması fonksiyonun parametre değişkenine sahip olmadığı anlamına gelmiyor. Fonksiyon parametre değişkeni hakkında bilgi verilmiyor sadece. Fonksiyonun parametre değişkeni yok anlamı söz konusu değil. 
+
+```C++
+void foo(void);
+```
+Bu fonksiyonun parametre değişkeni yok. 
+
+
+C dilinde fonksiyon bildirimlerinde parametre parantezinin içinin boş bırakılması ile void yazılması arasında fark var. C++ dilinde böyle bir fark yok. C++ dilinde boş bırakmakla, void anahtar kelimesini yazmak arasında hiçbir fark yok. 
+
+void foo() → foo’nun parametre değişkenleri hakkında bilgi verilmediği anlamına geliyor C programlama dilinde. 
+C++’da parametre değişkeni olmadığı anlamına geliyor. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # 11 Şubat 10. C++ Dersinden Notlar; 
 
 constructor initializer list CIL
