@@ -1,5 +1,255 @@
 # C++-Kursu-Notları-
 
+
+# 13 Ocak 1. C++ Dersinden Notlar; 
+
+2011 yılından önceki C++’a ancient c++ diyenler de var. 
+Modern c++ deniyor, bundan sonraki standardlara. Her yeri standard dile yeni araçlar ekliyor, bazı değişiklikler yapılıyor, deprecate ediliyor ve dilden çıkarılıyor. 
+
+Dilin temel 2 niteliği var. 
+Sentaksı (dilin kurallarına ilişkin)
+Semantik hatası (anlamsal kısmı)
+
+Birincil amaç c++ developer olmak, domainden bağımsız. 
+
+Ileri C++’da idiomatic yapılar anlatılıyor. 
+C++ verim odaklı bir dil. İşlemci zamanını iyi bir şekilde kullanabileceğimiz bir dil. Bunu sağlıyor aslında. 
+
+
+Bir programlama dilinin mükenmmel olduğunu iddia eden biri varsa ya aptaldır ya da size bir şey satmaya çalışıyordur. Her programlama dilinin iyi ve kötü yönleri var. 
+Linus torvalds c++’a düşman. Çok kötü bir dil olduğunu söylüyor. Ken Thompson da aynısını söylüyor. Allen key 
+Hiçbir dil mükemmel değil fakat c++ bir gerçek. Kullanıldığı alanlarda bir hakimiyeti var. Bu diller çok uzun süre varlıklarını devam ettirecekler. Ekosistemleri çok geniş. 
+
+Optimizasyon çok geniş bir konu. Optimizasyon derken birden fazla kavram işin içine giriyor. Compiler optimization, hayati bir önem taşıyor. As if rule ne demek ? observable behavior ne demek ? Çok çok önemli. 
+Compiler optimization şu demek ? c ve c++ derleyicileri sizin yazdığınız kodları farklı şekilde ele almış olabilirler. Çalıştırılabilir program gözlenebilirlik açısından bir fark meydana getirmiyorsa istediği değişikliği yapabilir. Derleyici daha etkin assembly veya makine kodu üretebilmek için optimizasyonlar yapıyor. Derleyicilerin optimizer modülü yapıyor bunu. 
+
+LTO aracı var, link time optimization
+İşlemci tarafından yapılan optimizasyonlar da var. 
+Derleme zamanında yapılan optimizasyonlar var. 
+Link zamanında yapılan optimizasyonlar var. 
+
+Mikro düzeyde optimizasyon bizim işimiz değil. 
+
+C++ ağırlıklı olarak generic programlama dili, türden bağımsız olması demek. Derleyici derleme aşamasında kod seçme avantajına sahip. Bir konteynırda tutulan öğeleri başka bir yere kopyalamak gerekiyor. Kopyalama işlemini memcpy fonksiyonuna çağrı yapacak bir koda dönüştürebiliyor. 
+Dilin bu şekilde araçları var. 
+
+Konteyner veri yapılarını temsil eden sınıflara verilen isim. 
+Kesinlikle hakim olmanız gereken bir şey var ; Terminoloji. 
+Undefined behavior, value category, implementation defined behavior gibi vs.
+C++’dan bahsedelim. 
+Const correctness nedir bunu bir araştır. 
+
+C++ ayrı bir disiplin. Ayrı bir uzmanlık alanı. Çok ciddi bir yatırım. 160 saatlik bir de ileri c++ kursu var. 
+Dilin küçüklüğü büyüklüğü derken neyi kastediyoruz ? Araç sayısını kastediyor Necati hoca. Çok fazla araca sahip olmasının sebebi de multi paradigm olması. 
+
+C++ dili nesne yönelimli programlama dili demek yanlıştır.  C++’ın temel varlık nedenlerinden biri çok paradigmalı olması. 
+Prosedürel olmalı
+Nesne yönelimli programlama
+Fonksiyonel programlama
+Generic programlama
+
+Multi paradigm bir dildir. Bu sebepten dolayı araç sayısı çok fazla. C++’ı zorlaştıran nedenlerden biri bu. 
+C++ dilinin oluşturduğu şöyle bir anksiyete var. İşlemi gerçekleştirmek için alternatif çok fazla. 
+
+Türkiye’de C++’ın en çok kullanıldığı domain gömülü yazılım. 
+Dilin büyük olmasının 2. Niteliği standard kütüphanesinin büyüklüğü. Standard kütüphane de sürekli büyüyor. 
+
+![image](https://github.com/user-attachments/assets/64528c63-e0d7-43a4-9f78-71a2ba304bb1)
+
+C++ 11, modern C++’ın başlangıç noktası
+Minimal C++ bizim için C++ 17
+
+Modern C++ ne getirdi ? 
+Bir kere dilde kod yazmak daha kolay hale geldi. Dil büyüdü ama daha kolay hale geldi. Derleyici daha fazla iş yükleyen araçlar eklendi. Dilin çekirdek sentaksında yapılan değişikliklerle kod yazmak daha kolay hale geldi. 
+Derlenen kodlar daha verimli hale geldi. Efficiency arttı. 
+C++ 98’e göre yazılmış bir kodu modern c++’ı destekleyen bir derleyicide derlediğinizde kodda bir değişiklik yapmadığınız halde daha hızlı çalışıyor. 
+
+
+Güvenlik ( kodlama hatası yapma riski), azaldı. Modern araçlar programcının yapabileceği hataların riskini de azalttı. Eskiye göre azalttı. 
+
+Kod kalabalığı (verbosity).
+Bizim minimal base’imiz C++17
+
+Legacy kod (miras kod), yazılan eski kodlar. Code base eski c++ ile yazılmış. Zaten çalışıyor, dokunma. Modern c++’a aktarmak için risk almak istemiyorlar firmalar. 
+
+Yeni bir projeye başlarken tercihimiz C++ 20 olmalı. 
+C++ 23 henüz derleyiciler tarafından implement edilmedi. 
+
+Dile eklenen araçlar olduğu gibi dilden çıkarılan araçlar da var. 
+Deprecation, önce bir sentaks özelliği deprecate ediliyor.  Standard diyor ki, bu araç ileriden dilden tamamen kaldırılabilir. Bu bir tavsiye, sen en iyisi kullanma. 
+
+gets - deprecate edildi ve dilden kaldırıldı. (C programlama dilinde.)
+
+cppreference sürekli kullanılması gereken bir site. Cppreference’nin dili standardlar kadar ağır ve formal değil. 
+ 
+Derleyiciler backward compatibility ile geriye dönük uyumluluk sağlıyorlar. 
+Standardın ne söylediği ayrı derleyicinin tutumu ayrı. 
+
+C++ dilinin %70’ine hakim olduğunu söylüyor, Bjarne Stroustrup. 
+C minimalist bir dil. Poor man’s language 😀
+
+İyi bir öğrenme metodolojisi + sistematik bir çalışma, başarının sırrı. 
+İyi bir C++ kodu yazmak apayrı bir konu. 
+
+Kod kalitesi ile ilgili yol gösterebilecek çok fayda araç var. Mesela SonarQube
+Gerçekten o toolları küçümsemek istemiyorum ama bu biraz da programcının bilgi seviyesi ile ilgili. 
+
+Başlangıçta dilin ismi C++ değildi. 
+C with classes’dı. 
+Amacı C’ye ilaveler yaparak dilin gücünü yükseltmek. 
+Zaman içinde Hem C diline hem C++ diline yapılan eklemeler ile arasındaki uyuşmazlıklar arttı. Ayrışmalar arttı. 
+C dili ile C++ dili arasındaki farklılıklar 
+
+Önemli terimler; 
+
+Observable behavior 
+Undefined behavior ile compiler optimization arasındaki ilişki nedir ? 
+
+Undefined behavior nedir ? tanımsız davranış, kodun niteliği. Kodu niteleyen bir durum. Derleyicinin herhangi bir şekilde hiçbir garanti olmadan istediği şekilde kod üretebilir. Kabul edilebilir bir kod değil, ne olacağının bir garantisi yok. Kod çalışırken kodun programcının istediği gibi çalışması da ihtimaller dahilinde. Tanımsız davranış her şey olabilir demek. 
+All bets are off. Öngörülebilir bir senaryo yok.
+Race condition, iyi huylu olabilir, tanımsız davranış olmayabilir. 
+Data race, tanımsız davranış kesinlikle. 
+
+Yeni tanımsız davranış durumları da standarda sonradan eklenebilir. 
+C++ 17 öncesinde tanımsız davranış olan kod C++ 17’den sonra defined code olabilir. 
+Tanımsız davranış durumunda, monitörden dumanlar çıktığını görmüşlüğüm var. 
+
+NULL pointerı dereference etmek….
+İşaretli tam sayı türlerinde taşma.. İşaretsiz tam sayı türlerinde taşma tanımsız davranış olmaz. Lojik bölme idi sanırım, bu şekilde kontrol var. 
+
+C++ dilinde de tanımsız davranışları öğrenicez. 
+Tanımsız davranışın felsefesi ne ? bütün davranışların tanımlı olması programlama dilinin genelliğini bozan bir özellik. 
+Tanımsız davranış compiler optimization ile önemli bir ilişki içinde. 
+C ve C++ derleyicileri, compiler optimization sürecinde optimizasyon tekniklerini yaparken kodda tanımsız davranış olmamasına güveniyor. 
+
+Derleyicilerin switchleri var. Debug sürecinde optimizasyon yapılmasını istemeyiz. Derleyicinin yaptığı optimizasyonu görebilmek için assembly bilmek gerekir. Godbolt’da kullanabilirsin. 
+
+Unspecified behavior (belirlenmemiş davranış): 
+
+Bir hata durumu olmak zorunda değil. Unspecified behavior, derleyici farklı şekilde kod üretme şansına sahip. Öyle de üretebilir böyle de üretebilir. Unspecified behavior’a göre kod yazıyorsunuz bunun bilincinde olarak yazman lazım. 
+
+![image](https://github.com/user-attachments/assets/3df8f71f-5061-4bb4-bded-d748ee7f5af1)
+
+Run time’da f2 daha önce çağrılır mı ? çarpma operatörünün önceliği toplama operatörünün önceliğinden daha yüksek diye. 
+Bu yanlış.
+
+Hangisinin daha önce çağrılacağı konusundan bir garanti yok.  Bunun farkında olmadan yazarsan lojik hata olmuş oluyor. Hangisinin çağrıldığının bir önemi yoksa sorun yok. 
+
+Derleyici 2 farklı şekilde kod üretebilir. 
+Derleyicinin x biçiminde kod ürettiğine güvenerek kod yazdıysanız ama y biçimde kod ürettiyse bu lojik hata. 
+
+Implementation defined behavior,
+
+Her implementation defined behavior bir unspecified behaviordur. Tam tersi geçerli değil 😀
+Seçimini dokümante etmek zorundadır. 
+Farklı derleyici aynı seçeneği tercih edip aynı kodu üretmiş olmayabilir. 
+
+
+
+
+C’de 3 tane char türü var. 
+signed char
+unsigned char 
+char
+
+Implementation defined, derleyiciye bağlı. 
+
+
+C++’ın içinde bir C çekirdeği var. C++’ın içindeki C çekirdeği, bu C çekirdeği better C. Bjarne’nin tanımı ile. 
+
+C ile C in C++, eskiden aralarındaki uyuşmazlık daha azdı. Standartlar ile uyumsuzluklar arttı. 
+
+C ve C++’da statik tür sistemine sahip. 
+Python gibi bir dilde yazdığınızı düşünelim. Değişkenlerin tuttuğu değerlerin türü dinamik olarak değişiyor. Bildirimlerle değişkenlerin ne türde değer tutacağını söylemiyorsunuz. Dinamik olarak değişiyor. 
+
+Statik tür sistemine sahip olması derleyicinin, çeviri aşamasında derleyicin yaptığı kontroller artırıyor ve hataların derleme zamanında tespit edilmesini sağlıyor. Dinamik tür sistemine sahip programlama dillerinde bu hatalar run time’da tespit edilebiliyor. 
+
+Statik tür kontrolü
+Weak
+Strength 
+
+C++ çok daha sıkı bir tür kontrolü uygular.
+C dilinin kurallarına göre legal olan derleyicinin diagnostic vermesi gerekmeyen durumlarda C++ derleyici uyarı verebilir. 
+
+![image](https://github.com/user-attachments/assets/92559c0c-99a1-4a85-a9a2-849aa5a3981e)
+
+C’de legal 
+C++’da sentaks hatası. 
+C++’ın küçük bir dil olma kaygısı olmadığı için kontroller daha sıkı.  
+C deki tür kontrolü zayıf, C++’da güçlü. 
+
+
+```c++
+‘A’ , character constant
+```
+Bu ifadenin türü ne ? C’de işaretli int türü. 
+C++’da bu ifadenin türü char. 
+
+Farklı kurallar içeriyor. 
+
+
+
+```c++
+int * = malloc(n*sizeof(int));
+
+```
+
+C’nin kurallarına aykırı bir durum var mı ? hayır. 
+Malloc fonksiyonuna yapılan çağrıdan elde edilen geri dönüş değeri türü void* ama initialize edilen int * 
+Tür dönüştürme operatörü kullanmak zorunda değilsiniz. Örtülü dönüşüm var. 
+
+C++’da sentaks hatası. void* türünden int* türüne örtülü dönüşüm yok. 
+
+```c++
+char str[4] = “mert”;
+
+```
+
+C’de sentaks hatası yok. Null terminated by stream değil. Dolayısıyla bu diziyi kullanırken sonunda null karakteri olmadığını bilerek kullanırsan sıkıntı yok. Aksi taktirde ub
+
+C++’da bu kod direkt sentaks hatası. Null karakter bir karakter sabiti, değeri 0 olan bir karakter sabiti. 
+
+
+Fonksiyon Tanımlamaları: 
+
+C’de implicit int kuralı geçerli. 
+C++’da bu sentaks hatası. C++’da implicit int hiçbir zaman geçerli olmadı. İmplicit int C++’da geçerli değil. 
+
+C programlamada
+
+```c++
+unsigned x = 5; 
+unsigned int x = 5; yazmak arasında hiçbir fark yok. 
+
+```
+int unsigned yazsan da aynı. 
+Aynısı C++’da da geçerli. Burada bir farklılık yok. 
+
+
+C’de old style function denilen eskiden gelen ama derleyicilerin halen destekleri bir fonksiyon tanımlama sentaksı var. 
+
+```c++
+double foo(a,b,c)
+double a,b,c;
+{
+	return a + b + c;
+}
+
+```
+Bazı programcılar böyle bir tanımlama sentaksı olduğunun bile farkında değiller. Buna old style function definition deniyor. C’de geçerli, backward compatibility için geçerli.
+
+C++’da old style function definition asla olmadı. 
+
+```c++
+foo(a,b,c)
+{
+	return a + b + c;
+}
+
+```
+Bu kod C’de geçerli.Enteresan 😀  İmplicit int var. 
+
+
 # 14 Ocak 2. C++ Dersinden Notlar; 
 
 C++ içindeki C ile bağımsız C arasındaki sentaks düzeyindeki farklılıklarını incelemeye başladık. 
